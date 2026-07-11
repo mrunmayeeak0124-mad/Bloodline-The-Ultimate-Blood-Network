@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BloodLine | Book Appointment</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;color:white;}
+
+/* BACKGROUND */
+.bg{
+position:fixed;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#1a0000,#330000,#0d0000);
+z-index:-1;
+}
+
+/* HEADER */
+header{
+padding:20px 50px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+font-size:28px;
+font-weight:bold;
+}
+
+/* NAV */
+nav{
+background:rgba(255,255,255,0.05);
+text-align:center;
+padding:12px;
+}
+
+nav a{
+color:#ffccd5;
+margin:0 20px;
+text-decoration:none;
+}
+
+/* MARQUEE */
+marquee{
+color:#ff8fa3;
+padding:10px;
+font-style:italic;
+}
+
+/* CONTAINER */
+.container{
+width:90%;
+max-width:1100px;
+margin:30px auto;
+}
+
+/* CARD */
+.card{
+background:#ffafc4;
+color:#4f000e;
+padding:25px;
+border-radius:18px;
+margin-bottom:20px;
+}
+
+/* SECTION BOX */
+.section{
+background:#ffd6de;
+padding:15px;
+border-radius:15px;
+margin-top:15px;
+}
+
+/* INPUT */
+input, select{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:25px;
+border:none;
+}
+
+/* BUTTON */
+.btn{
+margin-top:15px;
+padding:12px 25px;
+border:none;
+border-radius:30px;
+background:#ff4d6d;
+color:white;
+cursor:pointer;
+}
+
+/* STATUS */
+#status{
+margin-top:10px;
+font-weight:bold;
+}
+
+/* LETTER */
+.letter{
+display:none;
+background:white;
+color:black;
+padding:30px;
+border-radius:10px;
+margin-top:20px;
+}
+
+/* PRINT */
+@media print{
+body *{visibility:hidden;}
+.letter, .letter *{visibility:visible;}
+.letter{position:absolute;top:0;left:0;width:100%;}
+}
+
+/* FOOTER */
+footer{
+text-align:center;
+padding:30px;
+color:#ffbac7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<header>
+<div class="logo">❤️ BLOODLINE</div>
+<a href="sectionDonar.html" style="color:#ffc9d3;">← Dashboard</a>
+</header>
+
+<nav>
+<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10638672/">Awareness</a>
+<a href="https://naco.mohfw.gov.in/sites/default/files/Letter%20reg.%20%20guidelines%20for%20blood%20donor%20selection%20&%20referral%20-2017.pdf">Guidelines</a>
+<a href="https://www.ndtv.com/topic/blood-donation">Reports</a>
+<a href="https://www.redcrossblood.org/donate-blood/blood-donation-process/what-happens-to-donated-blood.html">Journey</a>
+</nav>
+
+<marquee>
+"Schedule your donation safely and responsibly."
+</marquee>
+
+<div class="container">
+
+<div class="card">
+
+<h2>📅 Book Appointment</h2>
+
+<!-- DONOR INFO -->
+<div class="section">
+<h3>👤 Donor Information</h3>
+<p>Please provide your basic details.</p>
+
+<input type="text" id="name" placeholder="Full Name">
+<input type="number" id="age" placeholder="Age">
+
+<select id="gender">
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<select id="blood">
+<option>A+</option>
+<option>A-</option>
+<option>B+</option>
+<option>B-</option>
+<option>O+</option>
+<option>O-</option>
+<option>AB+</option>
+<option>AB-</option>
+<option>Rh+</option>
+<option>Rh-</option>
+</select>
+</div>
+
+<!-- HISTORY -->
+<div class="section">
+<h3>🩸 Donation History</h3>
+<p>If not first donation, enter last donation date (minimum gap: 90 days).</p>
+
+<input type="date" id="lastDonation">
+</div>
+
+<!-- APPOINTMENT -->
+<div class="section">
+<h3>🏥 Appointment Details</h3>
+<p>Select your preferred date and center.</p>
+
+<input type="date" id="date">
+
+<select id="hospital">
+<option>Red Cross Blood Bank</option>
+<option>City Hospital</option>
+<option>Lifeline Center</option>
+</select>
+</div>
+
+<button class="btn" onclick="validate()">Check & Book</button>
+
+<p id="status"></p>
+
+</div>
+
+<!-- TIPS -->
+<div class="card">
+<h3>💡 Donation Tips</h3>
+<ul>
+<li>🍎 Eat iron-rich foods before donation</li>
+<li>💧 Drink plenty of water</li>
+<li>🚫 Avoid alcohol before/after donation</li>
+<li>😴 Sleep 7–8 hours</li>
+<li>🏥 Carry valid ID</li>
+</ul>
+</div>
+
+<!-- LETTER -->
+<div class="letter" id="letter">
+
+<h2>❤️ BLOODLINE</h2>
+<h3>Blood Donation Appointment Letter</h3>
+
+<p><b>Name:</b> <span id="l_name"></span></p>
+<p><b>Age:</b> <span id="l_age"></span></p>
+<p><b>Gender:</b> <span id="l_gender"></span></p>
+<p><b>Blood Group:</b> <span id="l_blood"></span></p>
+
+<hr>
+
+<p><b>Hospital:</b> <span id="l_hospital"></span></p>
+<p><b>Date:</b> <span id="l_date"></span></p>
+<p><b>Location:</b> Nearest Registered Blood Bank</p>
+<p><b>Contact:</b> +91 98765 43210</p>
+
+<hr>
+
+<p><b>Instructions:</b></p>
+<ul>
+<li>Arrive 10 minutes early</li>
+<li>Eat before donation</li>
+<li>Stay hydrated</li>
+</ul>
+
+<p style="margin-top:20px;">Authorized by BloodLine System</p>
+
+<button onclick="window.download()">🖨️ Download Appointment</button>
+
+<button onclick="window.print()">🖨️ Print Appointment</button>
+
+</div>
+
+</div>
+
+<footer>
+"Safe donation begins with proper planning."
+</footer>
+
+<script>
+
+function validate(){
+
+let name = document.getElementById("name").value;
+let age = document.getElementById("age").value;
+let last = document.getElementById("lastDonation").value;
+let date = document.getElementById("date").value;
+
+if(!name || !age || !date){
+alert("Please fill all required fields");
+return;
+}
+
+/* AGE CHECK */
+if(age < 18){
+document.getElementById("status").innerHTML="❌ Not eligible (Age must be 18+)";
+return;
+}
+
+/* LAST DONATION CHECK */
+if(last){
+let lastDate = new Date(last);
+let today = new Date();
+let diff = (today - lastDate)/(1000*60*60*24);
+
+if(diff < 90){
+document.getElementById("status").innerHTML="⚠️ You must wait at least 90 days before next donation.";
+return;
+}
+}
+
+/* SUCCESS */
+document.getElementById("status").innerHTML="✅ Eligible & Appointment Confirmed";
+
+/* FILL LETTER */
+document.getElementById("l_name").innerText = name;
+document.getElementById("l_age").innerText = age;
+document.getElementById("l_gender").innerText = document.getElementById("gender").value;
+document.getElementById("l_blood").innerText = document.getElementById("blood").value;
+document.getElementById("l_hospital").innerText = document.getElementById("hospital").value;
+document.getElementById("l_date").innerText = date;
+
+document.getElementById("letter").style.display="block";
+
+}
+
+</script>
+
+</body>
+</html>

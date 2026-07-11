@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BloodLine | Health Guide</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;color:white;}
+
+/* BACKGROUND */
+.bg{
+position:fixed;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#1a0000,#330000,#0d0000);
+z-index:-1;
+}
+
+/* HEADER */
+header{
+padding:20px 50px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{font-size:28px;font-weight:bold;}
+
+/* NAV */
+nav{
+background:rgba(255,255,255,0.05);
+text-align:center;
+padding:12px 0;
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+nav a{
+color:#ffccd5;
+margin:0 20px;
+text-decoration:none;
+font-weight:600;
+}
+
+/* MARQUEE */
+marquee{
+color:#ff8fa3;
+padding:10px;
+font-style:italic;
+}
+
+/* CONTAINER */
+.container{
+width:90%;
+max-width:1100px;
+margin:30px auto;
+}
+
+/* CARD */
+.card{
+background:#ffafc4;
+color:#4f000e;
+padding:20px;
+border-radius:15px;
+border-left:5px solid #ff4d6d;
+margin-bottom:20px;
+}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+/* IMAGE */
+img{
+width:100%;
+border-radius:15px;
+margin-top:10px;
+}
+
+/* TOOL BOX */
+.tool{
+background:#ffccd5;
+color:#4f000e;
+padding:15px;
+border-radius:15px;
+margin-top:20px;
+}
+
+/* BUTTON */
+.btn{
+margin-top:10px;
+padding:10px 20px;
+border:none;
+border-radius:25px;
+background:#ff4d6d;
+color:white;
+cursor:pointer;
+}
+
+/* FAQ */
+details{
+margin-top:10px;
+background:#ffccd5;
+padding:10px;
+border-radius:10px;
+color:#4f000e;
+}
+
+/* FOOTER */
+footer{
+text-align:center;
+padding:30px;
+color:#ffbac7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<header>
+<div class="logo">❤️ BLOODLINE</div>
+<a href="sectionDonar.html" style="color:#ffc9d3;">← Dashboard</a>
+</header>
+
+<nav>
+<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10638672/">Awareness</a>
+<a href="https://naco.mohfw.gov.in/sites/default/files/Letter%20reg.%20%20guidelines%20for%20blood%20donor%20selection%20&%20referral%20-2017.pdf">Guidelines</a>
+<a href="https://www.ndtv.com/topic/blood-donation">Reports</a>
+<a href="https://www.redcrossblood.org/donate-blood/blood-donation-process/what-happens-to-donated-blood.html">Journey</a>
+</nav>
+
+<marquee>
+"Stay healthy, donate safely, recover quickly."
+</marquee>
+
+<div class="container">
+
+<!-- BEFORE -->
+<div class="card">
+<h2>🍎 Before Donation (24 Hours)</h2>
+<div class="grid">
+<div>
+<ul>
+<li>Eat iron-rich foods (spinach, lentils, dates)</li>
+<li>Drink 500ml extra water before donation</li>
+<li>Avoid oily/fried foods</li>
+<li>Sleep at least 7–8 hours</li>
+</ul>
+<img src="https://images.unsplash.com/photo-1490818387583-1baba5e638af">
+</div>
+
+<div>
+<h3>📄 WHO Pre-Donation Guide</h3>
+<embed src="https://www.scribd.com/document/270533177/Blood-Donor-Selection-WHO-Guidelines-pdf" width="100%" height="250">
+</div>
+</div>
+</div>
+
+<!-- DURING -->
+<div class="card">
+<h2>🩸 During Donation</h2>
+<ul>
+<li>Relax and stay calm</li>
+<li>Procedure takes 8–10 minutes</li>
+<li>Medical staff monitors vitals</li>
+<li>Safe and sterile equipment used</li>
+</ul>
+</div>
+
+<!-- AFTER -->
+<div class="card">
+<h2>💧 After Donation (First 24 Hours)</h2>
+<div class="grid">
+<div>
+<ul>
+<li>Drink 3–4 glasses of water</li>
+<li>Eat protein & iron (eggs, nuts)</li>
+<li>Avoid gym/heavy work for 24h</li>
+<li>Take rest if dizzy</li>
+</ul>
+<img src="https://images.unsplash.com/photo-1505576399279-565b52d4ac71" >
+</div>
+
+<div>
+<h3>🎥 Post Donation Care (Video)</h3>
+<iframe><video width="100%" height="200" src="https://www.youtube.com/watch?v=kOISEM6L4xk" type="video/mp4" frame="1"></video></iframe>
+</div>
+
+<div>
+<h3>🎥 What Happens to Donated Blood (Video)</h3>
+<iframe><video width="100%" height="200" src="https://www.youtube.com/watch?v=Q55LrC7vijM" type="video/mp4" frame="1"></video></iframe>
+</div>
+
+
+</div>
+</div>
+
+<!-- TOOL -->
+<div class="tool">
+<h3>💧 Hydration Calculator</h3>
+<input type="number" id="weight" placeholder="Enter your weight (kg)" style="padding:10px;width:100%;border-radius:20px;">
+<button class="btn" onclick="calcWater()">Calculate</button>
+
+<p id="waterResult"></p>
+</div>
+
+<!-- FAQ -->
+<div class="card">
+<h3>❓ Common Questions</h3>
+
+<details>
+<summary>Can I exercise after donation?</summary>
+<p>Avoid heavy lifting for 6–8 hours. Light activity is fine.</p>
+</details>
+
+<details>
+<summary>Will I feel weak?</summary>
+<p>Most donors feel normal. Eat and hydrate properly.</p>
+</details>
+
+<details>
+<summary>Can I donate if I am on medication?</summary>
+<p>Depends on condition. Always consult doctor.</p>
+</details>
+
+</div>
+
+<!-- LONG TERM -->
+<div class="card">
+<h3>🌟 Long-Term Donor Health</h3>
+<ul>
+<li>Maintain iron levels regularly</li>
+<li>Donate every 3–4 months safely</li>
+<li>Regular donors often have better health monitoring</li>
+</ul>
+</div>
+
+</div>
+
+<footer>
+"Healthy donors create a stronger healthcare system."
+</footer>
+
+<script>
+
+function calcWater(){
+let w = document.getElementById("weight").value;
+if(!w){
+alert("Enter weight");
+return;
+}
+let water = w * 35;
+document.getElementById("waterResult").innerText =
+"Recommended daily water intake: " + water + " ml";
+}
+
+</script>
+
+</body>
+</html>

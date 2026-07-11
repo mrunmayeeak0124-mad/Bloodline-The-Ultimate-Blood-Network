@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodline | Rare Blood Groups</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-red: #ff3131;
+            --bg-light: #f8f9fa;
+            --glass: rgba(255, 255, 255, 0.95);
+            --available: #00b894;
+            --unavailable: #636e72;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            display: flex; flex-direction: column; align-items: center;
+            padding-bottom: 60px;
+        }
+
+        /* Branding */
+        .brand-container {
+            position: absolute; top: 30px; left: 40px;
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .logo-mark {
+            width: 30px; height: 30px;
+            background: var(--primary-red);
+            border-radius: 50% 50% 50% 10%;
+            transform: rotate(-45deg);
+        }
+
+        .brand-text { font-size: 1.5rem; font-weight: 800; margin: 0; }
+        .brand-text span { color: var(--primary-red); }
+
+        /* Back Button */
+        .back-btn {
+            position: absolute; top: 35px; right: 40px;
+            text-decoration: none; color: #1a1a1a; font-weight: 700;
+            padding: 10px 20px; background: white; border-radius: 12px;
+            border: 1px solid #e2e8f0; transition: 0.3s;
+        }
+        .back-btn:hover { background: var(--primary-red); color: white; }
+
+        header { margin-top: 120px; text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 8px; margin: 0; color: #0f172a; }
+
+        .alert-box {
+            display: inline-block; margin-top: 15px; background: #fff5f5;
+            color: var(--primary-red); padding: 6px 20px; border-radius: 50px;
+            font-weight: 700; font-size: 0.8rem; letter-spacing: 2px;
+        }
+
+        /* Table Design */
+        .table-wrap {
+            width: 90%; max-width: 1000px; background: var(--glass);
+            border-radius: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05); overflow: hidden;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            background: #fdfdfd; padding: 22px; text-align: left;
+            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;
+            color: #636e72; border-bottom: 2px solid #f1f2f6;
+        }
+
+        td { padding: 20px; border-bottom: 1px solid #f1f2f6; font-size: 1rem; font-weight: 600; }
+
+        .blood-type {
+            color: var(--primary-red); font-weight: 800; background: #fff5f5;
+            padding: 5px 12px; border-radius: 8px;
+        }
+
+        .status { display: flex; align-items: center; gap: 8px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot.online { background-color: var(--available); box-shadow: 0 0 8px var(--available); }
+        .dot.offline { background-color: var(--unavailable); }
+        .contact-link { text-decoration: none; color: #0984e3; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <div class="brand-container">
+        <div class="logo-mark"></div>
+        <h1 class="brand-text">blood<span>line</span></h1>
+    </div>
+
+    <a href="trial1.html" class="back-btn">← DASHBOARD</a>
+
+    <header>
+        <h1>Rare Blood Group</h1>
+        <div class="alert-box">CRITICAL DONOR REGISTRY</div>
+    </header>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Donor Name</th>
+                    <th>Blood Group</th>
+                    <th>Contact Number</th>
+                    <th>Availability</th>
+                </tr>
+            </thead>
+            <tbody id="rareDonorsTableBody">
+                <!-- 🔄 Live database entries will be rendered here dynamically -->
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #888;">Synchronizing live registry arrays...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 🟢 CENTRAL DATABASE LINKING UTILITY ENGINE -->
+    <script>
+        async function fetchRareRegistryDonors() {
+            const tableBody = document.getElementById('rareDonorsTableBody');
+            
+            try {
+                // 1. Fetch live stock diagnostics directly from the active Node server audit endpoint
+                const response = await fetch('http://localhost:5000/api/inventory/audit');
+                const result = await response.json();
+                
+                if (result.success && result.inventory) {
+                    // 2. Clear out initial text loading messages cleanly
+                    tableBody.innerHTML = '';
+                    
+                    // 3. Define target rare blood group profile array matching configuration rules
+                    const rareGroups = ['O-', 'AB-', 'A-', 'B-'];
+                    
+                    // 4. Isolate available items matching the targeted rare variants profile parameters
+                    const rareBags = result.inventory.filter(bag => rareGroups.includes(bag.bloodGroup));
+                    
+                    if (rareBags.length === 0) {
+                        tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #888;">No rare variant stock packages currently logged in the live cloud layer.</td></tr>`;
+                        return;
+                    }
+                    
+                    // 5. Draw rows dynamically based on existing database item metrics parameters
+                    rareBags.forEach(bag => {
+                        const row = document.createElement('tr');
+                        
+                        // Fallback strings handle presentation if donor profile parameters are unpopulated
+                        const donorName = bag.donorId ? "Verified BloodLine Donor" : "Emergency Reserve Stock";
+                        const displayContact = "+91 99000-11000"; 
+                        
+                        row.innerHTML = `
+                            <td>${donorName} (ID: ${bag.bagSerialNumber})</td>
+                            <td><span class="blood-type">${bag.bloodGroup}</span></td>
+                            <td><a href="tel:${displayContact}" class="contact-link">${displayContact}</a></td>
+                            <td>
+                                <div class="status">
+                                    <span class="dot online"></span> 
+                                    Available (${bag.storageComponent})
+                                </div>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    throw new Error("Invalid database packet signature received.");
+                }
+            } catch (error) {
+                console.error("Rare registry communications loop failure:", error);
+                tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--primary-red);">Failed to establish handshake connection with Express server. Ensure node server.js is active.</td></tr>`;
+            }
+        }
+
+        // Execute data extraction pipeline sequence immediately upon screen layout load
+        window.onload = fetchRareRegistryDonors;
+    </script>
+</body>
+</html>

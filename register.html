@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodLine - Portal Actions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+          --red:        #e02020;
+          --red-deep:   #b01515;
+          --red-light:  #fff1f1;
+          --red-mid:    #ffd6d6;
+          --bg:         #fdf6f6;
+          --surface:    #ffffff;
+          --surface2:   #fff8f8;
+          --border:     #f0d4d4;
+          --text:       #1a0a0a;
+          --text-sub:   #7a4a4a;
+          --text-muted: #b08080;
+          --shadow:     0 4px 28px rgba(180,60,60,0.10);
+          --shadow-lg:  0 12px 48px rgba(180,60,60,0.16);
+          --radius:     20px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); padding-top: 110px; }
+
+        header {
+          position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+          background: rgba(253,246,246,0.92); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+          border-bottom: 1.5px solid var(--border); padding: 0 5vw; height: 75px;
+          display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 20px rgba(180,60,60,0.07);
+        }
+        .brand-name { font-family: 'Fraunces', serif; font-weight: 900; font-size: 24px; color: var(--red); }
+        header div:last-child { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+        nav { position: fixed; top: 75px; left: 0; right: 0; z-index: 190; background: var(--red-light); border-bottom: 1.5px solid var(--red-mid); padding: 8px 5vw; display: flex; gap: 20px; }
+        nav a { text-decoration: none; color: var(--text-sub); font-weight: 600; font-size: 14px; }
+        nav a:hover { color: var(--red); }
+
+        .container {
+            max-width: 1100px; margin: 40px auto 80px; width: 90%;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+        }
+
+        .form-card, .search-section {
+            background: var(--surface); border: 1.5px solid var(--border);
+            padding: 40px; border-radius: var(--radius); box-shadow: var(--shadow-lg);
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .search-section { background: var(--surface2); border-style: dashed; justify-content: center; align-items: center; text-align: center; }
+
+        h2 { font-family: 'Fraunces', serif; font-size: 26px; color: var(--text); }
+        p { font-size: 14px; color: var(--text-sub); font-weight: 500; }
+
+        .input-group { display: flex; flex-direction: column; gap: 6px; position: relative; width: 100%; text-align: left; }
+        label { font-size: 13px; font-weight: 700; color: var(--text-sub); }
+
+        input, select {
+            width: 100%; padding: 12px 16px; font-family: inherit; font-size: 14px;
+            background: var(--surface); border: 1.5px solid var(--border); border-radius: 8px; color: var(--text);
+        }
+
+        /* IN-LINE ERROR MESSAGES */
+        .error-msg {
+            font-size: 12px; font-weight: 600; color: var(--red);
+            margin-top: -2px; display: none; text-align: left;
+        }
+
+        .success-msg {
+            font-size: 14px; font-weight: 700; color: var(--green);
+            margin-top: 10px; display: none; text-align: center;
+        }
+
+        .btn {
+            width: 100%; background: var(--red); color: white; padding: 14px; border: none; border-radius: 10px;
+            font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.2s; text-align: center; text-decoration: none;
+        }
+        .btn:hover { background: var(--red-deep); transform: translateY(-1px); }
+
+        /* ── LARGE OPTIONS PANEL UI ── */
+        #optionsPage {
+            display: none; max-width: 1100px; margin: 40px auto 80px; width: 90%;
+            background: var(--surface); border: 1.5px solid var(--border);
+            border-radius: var(--radius); padding: 60px 5vw; box-shadow: var(--shadow-lg); text-align: center;
+        }
+        
+        #optionsPage h2 { font-family: 'Fraunces', serif; font-size: 32px; margin-bottom: 8px; }
+        #optionsPage p { font-size: 16px; color: var(--text-sub); margin-bottom: 40px; }
+
+        .options-container { 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 900px; margin: 0 auto;
+        }
+        
+        .option-card {
+            background: var(--surface2); border: 2px solid var(--border); border-radius: 16px;
+            padding: 45px 30px; cursor: pointer; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+        }
+        .option-card span.icon { font-size: 40px; }
+        .option-card span.label { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; color: var(--text); }
+        
+        .option-card:hover { 
+            border-color: var(--red-mid); background: var(--red-light); transform: scale(1.03) translateY(-4px); 
+            box-shadow: var(--shadow-lg);
+        }
+        .option-card:hover span.label { color: var(--red); }
+
+        footer { padding: 40px 5vw; text-align: center; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+
+        @media (max-width: 900px) { 
+            .container { grid-template-columns: 1fr; } 
+            .options-container { grid-template-columns: 1fr; } 
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="display:flex; align-items:center; gap:11px;">
+        <span style="font-size:24px;">❤️</span>
+        <span class="brand-name">BLOOD-LINE</span>
+    </div>
+    <div>Be the reason for someone's heartbeat...</div>
+</header>
+
+<nav>
+    <a href="HomePage.html">Home</a>
+    <a href="AboutUs.html">About Our Website</a>
+    <a href="ContactUs.html">Contact Us</a>
+</nav>
+
+<div class="container" id="mainPage">
+    <div class="form-card">
+        <h2>Join the Network</h2>
+        <p>Register yourself as a voluntary donor and be someone's hero.</p>
+
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="donorName" placeholder="Enter your name">
+            <span class="error-msg" id="errorName">⚠️ Please enter your full credentials/name.</span>
+        </div>
+        <div class="input-group">
+            <label>Blood Group</label>
+            <select id="donorGroup">
+                <option value="">Select Group</option>
+                <option>A+</option><option>A-</option>
+                <option>B+</option><option>B-</option>
+                <option>O+</option><option>O-</option>
+                <option>AB+</option><option>AB-</option>
+            </select>
+            <span class="error-msg" id="errorGroup">⚠️ Please select a valid blood group.</span>
+        </div>
+        <div class="input-group">
+            <label>City/Location</label>
+            <input type="text" id="donorLocation" placeholder="e.g. Pune, Mumbai">
+            <span class="error-msg" id="errorLocation">⚠️ Please enter your current location.</span>
+        </div>
+        <div class="input-group">
+            <label>Phone Number</label>
+            <input type="tel" id="donorPhone" placeholder="Your contact number">
+            <span class="error-msg" id="errorPhone">⚠️ Please enter your contact number.</span>
+        </div>
+
+        <button class="btn" onclick="validateAndSubmitDonor()">Submit Details</button>
+    </div>
+
+    <div class="search-section">
+        <div style="font-size: 40px; margin-bottom: 10px;">🆘</div>
+        <h2>Emergency Search</h2>
+        <p style="margin-bottom: 20px;">Need blood urgently? Search our real-time localized bank records database instantly.</p>
+
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 14px;">
+            <div class="input-group">
+                <select id="searchGroup">
+                    <option value="">Required Blood Group</option>
+                    <option>A+</option><option>A-</option>
+                    <option>B+</option><option>B-</option>
+                    <option>O+</option><option>O-</option>
+                    <option>AB+</option><option>AB-</option>
+                </select>
+                <span class="error-msg" id="errorSearchGroup">⚠️ Please choose a blood group to find matches.</span>
+            </div>
+            <button class="btn" id="findBtn" style="background:#3a0000;" onclick="window.location.href='matchmaker/location.html'">Find Donors Near Me !</button>
+            <div class="success-msg" id="searchSuccess"></div>
+        </div>
+    </div>
+</div>
+
+<div id="optionsPage">
+    <h2>Our Website's Features Are...</h2>
+    <p>Select What You Are Interested In To Access Your Dedicated Dashboard Portal.</p>
+
+    <div class="options-container">
+        <div class="option-card" onclick="window.location.href='donor/homeDonar.html'">
+            <span class="icon">❤️</span>
+            <span class="label">Donate</span>
+        </div>
+        <div class="option-card" onclick="window.location.href='#'">
+            <span class="icon">🏥</span>
+            <span class="label">Camp Setup</span>
+        </div>
+        <div class="option-card" onclick="window.location.href='matchmaker/index.html'">
+            <span class="icon">🔍</span>
+            <span class="label">Matcher</span>
+        </div>
+        <div class="option-card" onclick="window.location.href='blood/trial2.html'">
+            <span class="icon">🩸</span>
+            <span class="label">Blood Bank Management</span>
+        </div>
+    </div>
+</div>
+
+<footer>
+    The Real Time Blood Network | Every drop of blood is hope...
+</footer>
+
+<script>
+function validateAndSubmitDonor() {
+    // Reset errors
+    document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+
+    const name = document.getElementById("donorName").value.trim();
+    const group = document.getElementById("donorGroup").value;
+    const location = document.getElementById("donorLocation").value.trim();
+    const phone = document.getElementById("donorPhone").value.trim();
+    
+    let isValid = true;
+
+    if (!name) {
+        document.getElementById("errorName").style.display = "block";
+        isValid = false;
+    }
+    if (!group) {
+        document.getElementById("errorGroup").style.display = "block";
+        isValid = false;
+    }
+    if (!location) {
+        document.getElementById("errorLocation").style.display = "block";
+        isValid = false;
+    }
+    if (!phone) {
+        document.getElementById("errorPhone").style.display = "block";
+        isValid = false;
+    }
+
+    if (!isValid) return;
+
+    // Switch view panel if validation is successful
+    document.getElementById("mainPage").style.display = "none";
+    document.getElementById("optionsPage").style.display = "block";
+}
+
+function findDonorsNearMe() {
+    // Reset validation and success feedback state
+    document.getElementById("errorSearchGroup").style.display = "none";
+    document.getElementById("searchSuccess").style.display = "none";
+
+    const searchGroup = document.getElementById("searchGroup").value;
+    const findBtn = document.getElementById("findBtn");
+    const successMsg = document.getElementById("searchSuccess");
+
+    if (!searchGroup) {
+        document.getElementById("errorSearchGroup").style.display = "block";
+        return;
+    }
+
+    // Processing state simulation
+    findBtn.disabled = true;
+    findBtn.textContent = "Scanning Real-Time Network reserves...";
+
+    setTimeout(() => {
+        findBtn.disabled = false;
+        findBtn.textContent = "Find Donors Near Me !";
+        
+        // Show matching results inline
+        successMsg.textContent = "✅ Found matching active " + searchGroup + " donors in your local radius!";
+        successMsg.style.display = "block";
+        
+    }, 1200);
+}
+</script>
+</body>
+</html>

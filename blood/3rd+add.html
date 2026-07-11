@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodline | Inventory Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* --- DASHBOARD --- */
+        #dashboardPage {
+            width: 100%; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
+                        url('https://plus.unsplash.com/premium_vector-1720636314575-748da2042f21?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0');
+            background-size: cover; background-position: center;
+        }
+
+        .top-right-button {
+            position: fixed; top: 30px; right: 30px;
+            padding: 14px 28px; background: white; color: #d9534f;
+            border: none; border-radius: 12px; font-weight: 800; font-size: 0.9rem; 
+            cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3); z-index: 100;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* Fixed Top Left Back Button to keep the seamless dashboard flow */
+        .top-left-button {
+            position: fixed; top: 30px; left: 30px;
+            padding: 14px 28px; background: rgba(255, 255, 255, 0.15); color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 12px; font-weight: 800; font-size: 0.9rem; 
+            cursor: pointer; backdrop-filter: blur(10px); z-index: 100;
+            text-transform: uppercase; letter-spacing: 1px; text-decoration: none;
+            transition: 0.3s;
+        }
+        .top-left-button:hover { background: white; color: #d9534f; }
+
+        h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 40px; text-align: center; }
+
+        .blood-group-container {
+            display: grid; grid-template-columns: repeat(5, 1fr);
+            gap: 20px; max-width: 850px; padding: 35px;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px);
+            border-radius: 35px; border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .blood-btn {
+            width: 130px; height: 130px; border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1); color: white;
+            font-size: 1.4rem; font-weight: 800; cursor: pointer; transition: 0.3s;
+        }
+
+        .blood-btn:hover { background: white; color: #d9534f; transform: scale(1.05); }
+
+        /* --- SAMPLE BAG WINDOW (MODAL) --- */
+        #groupWindow {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; max-width: 450px; background: white; color: #333; padding: 35px; 
+            border-radius: 35px; z-index: 2000; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+
+        .blood-bag-visual {
+            width: 100px; height: 150px; background: #f8f9fa; border: 3px solid #333;
+            margin: 20px auto; border-radius: 8px 8px 35px 35px; position: relative;
+            overflow: hidden;
+        }
+        .blood-fill {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: #d9534f; height: 0%; transition: height 0.8s ease-in-out;
+        }
+        .bag-label {
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            background: #fff; padding: 4px 8px; border-radius: 4px;
+            font-weight: 800; color: #000; border: 1px solid #333; font-size: 0.9rem;
+        }
+
+        /* --- ADD FORM PAGE --- */
+        #addBagPage {
+            display: none; width: 100%; min-height: 100vh;
+            flex-direction: column; align-items: center; justify-content: center;
+            background: #fff; color: #333;
+        }
+        .form-card { width: 400px; padding: 30px; border: 1px solid #eee; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
+        label { font-size: 0.75rem; font-weight: 800; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }
+        input, select { width: 100%; padding: 14px; margin: 8px 0 20px 0; border-radius: 12px; border: 2px solid #f0f0f0; font-size: 1rem; background: #fafafa; }
+        .save-btn { width: 100%; padding: 16px; background: #d9534f; color: white; border: none; border-radius: 15px; font-weight: 800; font-size: 1rem; cursor: pointer; }
+
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; }
+    </style>
+</head>
+<body>
+
+    <div id="overlay" onclick="closeWindow()"></div>
+
+    <div id="dashboardPage">
+        <a href="trial1.html" class="top-left-button">← Dashboard</a>
+        <button class="top-right-button" onclick="showAddBag()">+ Add New Bag</button>
+        <h2>Blood Bank Inventory</h2>
+        
+        <div class="blood-group-container">
+            <button class="blood-btn" onclick="openGroupWindow('A+')">A+</button>
+            <button class="blood-btn" onclick="openGroupWindow('A-')">A-</button>
+            <button class="blood-btn" onclick="openGroupWindow('B+')">B+</button>
+            <button class="blood-btn" onclick="openGroupWindow('B-')">B-</button>
+            <button class="blood-btn" onclick="openGroupWindow('AB+')">AB+</button>
+            <button class="blood-btn" onclick="openGroupWindow('AB-')">AB-</button>
+            <button class="blood-btn" onclick="openGroupWindow('O+')">O+</button>
+            <button class="blood-btn" onclick="openGroupWindow('O-')">O-</button>
+            <button class="blood-btn" onclick="openGroupWindow('Rh+')">Rh+</button>
+            <button class="blood-btn" onclick="openGroupWindow('Rh-')">Rh-</button>
+        </div>
+    </div>
+
+    <div id="groupWindow">
+        <h1 id="windowTitle" style="font-size: 2rem; color: #d9534f; margin-bottom: 5px;">A+</h1>
+        <p style="font-weight: 600; color: #888; font-size: 0.9rem;">Current Stock Status</p>
+
+        <div class="blood-bag-visual">
+            <div class="blood-fill" id="bagFill"></div>
+            <div class="bag-label" id="bagLabel">A+</div>
+        </div>
+
+        <div id="bagStats" style="margin-bottom: 20px; font-size: 1.1rem; font-weight: 700;">
+            Total Units: 0
+        </div>
+
+        <button onclick="closeWindow()" style="width:100%; padding:14px; border-radius:12px; border:none; background:#f4f4f4; font-weight:800; cursor:pointer;">Close Window</button>
+    </div>
+
+    <div id="addBagPage">
+        <h1 style="font-size: 1.8rem; margin-bottom: 25px; font-weight: 800;">Register Donation</h1>
+        <div class="form-card">
+            <form id="bloodForm">
+                <label>Donor Full Name</label>
+                <input type="text" id="donorName" placeholder="Name" required>
+                
+                <label>Blood Group</label>
+                <select id="bloodGroup" required>
+                    <option value="">Select Type</option>
+                    <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                    <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+                    <option>Rh+</option><option>Rh-</option>
+                </select>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label>Collection Date</label>
+                        <input type="date" id="colDate" required>
+                    </div>
+                    <div>
+                        <label>Expiry Date</label>
+                        <input type="date" id="expDate" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="save-btn">Confirm & Save</button>
+            </form>
+            <button onclick="showDashboard()" style="width:100%; background:none; border:none; color:#bbb; margin-top:15px; cursor:pointer; font-weight:700; font-size: 0.8rem;">BACK TO INVENTORY</button>
+        </div>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+<script>
+    // Live cache for database states
+    let localInventoryCache = {};
+
+    // 1. DYNAMICALLY LOAD STOCK ON LAUNCH
+    async function syncLiveStockMetrics() {
+        const result = await BloodLineAPI.fetchInventoryAudit();
+        if(result.success) {
+            // Group and count quantities dynamically based on blood type fields
+            const counts = { 'A+': 0, 'A-': 0, 'B+': 0, 'B-': 0, 'AB+': 0, 'AB-': 0, 'O+': 0, 'O-': 0, 'Rh+': 0, 'Rh-': 0 };
+            
+            result.inventory.forEach(bag => {
+                if(counts[bag.bloodGroup] !== undefined) {
+                    counts[bag.bloodGroup]++;
+                }
+            });
+
+            localInventoryCache = counts;
+            console.log("Database inventory successfully synchronized:", counts);
+        } else {
+            console.error("Failed to fetch database inventory.");
+        }
+    }
+
+    // 2. MODIFIED TRANSACTION INTAKE SUBMIT LOGIC
+   const bloodForm = document.getElementById('bloodForm');
+bloodForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const bagPayload = {
+        bloodGroup: document.getElementById('bloodGroup').value,
+        volumeMl: 450,
+        storageComponent: 'Whole Blood',
+        assignedBankFacility: 'Central BloodLine Hub',
+        donorId: "65f1a2b3c4d5e6f7a8b9c0d1", // Placeholder ID
+        collectedDate: document.getElementById('colDate').value // ➕ PASS THE USER'S DATE CHOICE HERE!
+    };
+
+    const result = await BloodLineAPI.addNewBloodBag(bagPayload);
+    if(result.success) {
+        alert(`✅ Success! Bag generated with live serial barcode: ${result.data.bagSerialNumber}`);
+        bloodForm.reset();
+        await syncLiveStockMetrics();
+        showDashboard();
+    } else {
+        alert("Error logging bag to backend: " + result.error);
+    }
+});
+
+    // 3. UPDATED DETAIL WINDOW RENDERING
+    function openGroupWindow(group) {
+        document.getElementById('windowTitle').innerText = group;
+        document.getElementById('bagLabel').innerText = group;
+        
+        const count = localInventoryCache[group] || 0;
+        document.getElementById('bagStats').innerText = `Total Units: ${count}`;
+
+        // Visual Fill adjustment matching dynamic data states
+        const fillPercentage = Math.min(count * 20, 100); 
+        document.getElementById('bagFill').style.height = fillPercentage + '%';
+
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('groupWindow').style.display = 'block';
+    }
+
+    function closeWindow() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('groupWindow').style.display = 'none';
+    }
+
+    function showAddBag() {
+        document.getElementById('dashboardPage').style.display = 'none';
+        document.getElementById('addBagPage').style.display = 'flex';
+    }
+
+    function showDashboard() {
+        document.getElementById('addBagPage').style.display = 'none';
+        document.getElementById('dashboardPage').style.display = 'flex';
+    }
+
+    // Trigger background database handshake synchronization instantly when page wakes up
+    window.onload = syncLiveStockMetrics;
+</script>
+</body>
+</html>

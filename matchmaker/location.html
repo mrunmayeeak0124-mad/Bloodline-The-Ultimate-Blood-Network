@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BloodLine — Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<style>
+  :root {
+    --red: #d62828;
+    --red-deep: #9b1b1b;
+    --red-glow: rgba(214,40,40,0.18);
+    --bg: #0e0b0b;
+    --surface: #1a1212;
+    --surface2: #221818;
+    --border: rgba(214,40,40,0.15);
+    --text: #f5eded;
+    --text-muted: #9e8a8a;
+    --green: #3ddc84;
+    --amber: #ffb347;
+    --blue: #60a5fa;
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: rgba(14,11,11,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    z-index: 1000;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    color: var(--text);
+  }
+
+  .logo-drop {
+    width: 30px; height: 30px;
+    background: var(--red);
+    border-radius: 50% 50% 50% 10%;
+    transform: rotate(-30deg);
+    box-shadow: 0 0 14px var(--red-glow);
+    animation: pulse-glow 2.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse-glow {
+    0%,100% { box-shadow: 0 0 10px var(--red-glow); }
+    50%      { box-shadow: 0 0 24px rgba(214,40,40,0.45); }
+  }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    flex-shrink: 0;
+    z-index: 999;
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 10px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px 8px 32px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(214,40,40,0.1);
+  }
+
+  .search-input::placeholder { color: var(--text-muted); }
+
+  .filter-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .filter-select:focus { border-color: var(--red); }
+
+  .filter-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .filter-btn.active-filter {
+    border-color: var(--red);
+    color: var(--red);
+    background: var(--red-glow);
+  }
+
+  .locate-btn {
+    background: var(--red);
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(214,40,40,0.25);
+  }
+
+  .locate-btn:hover { background: #bf1f1f; transform: translateY(-1px); }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── MAP ── */
+  #map {
+    flex: 1;
+    z-index: 1;
+  }
+
+  /* ── SIDE LIST ── */
+  .side-list {
+    width: 300px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .list-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .list-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .list-count {
+    background: var(--red-glow);
+    color: var(--red);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(214,40,40,0.25);
+  }
+
+  .list-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .list-scroll::-webkit-scrollbar { width: 4px; }
+  .list-scroll::-webkit-scrollbar-track { background: transparent; }
+  .list-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .list-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .list-item:hover {
+    border-color: rgba(214,40,40,0.4);
+    transform: translateX(-2px);
+  }
+
+  .list-item-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .list-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .list-avatar.donor   { background: linear-gradient(135deg, var(--red-deep), var(--red)); }
+  .list-avatar.patient { background: linear-gradient(135deg, #1e3a5f, #2563eb); }
+
+  .list-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .list-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+
+  .list-blood {
+    margin-left: auto;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--red);
+  }
+
+  .list-item-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .dist-pill {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .type-pill {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  .type-pill.donor   { background: rgba(214,40,40,0.12); color: var(--red); }
+  .type-pill.patient { background: rgba(96,165,250,0.12); color: var(--blue); }
+
+  /* ── LEGEND ── */
+  .legend {
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── LEAFLET OVERRIDES ── */
+  .leaflet-container { background: #1a1212 !important; }
+
+  .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9); }
+
+  .leaflet-popup-content-wrapper {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+    font-family: 'DM Sans', sans-serif !important;
+  }
+
+  .leaflet-popup-tip { background: var(--surface) !important; }
+
+  .leaflet-popup-close-button { color: var(--text-muted) !important; }
+
+  .popup-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .popup-row {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .popup-blood {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--red);
+    float: right;
+    margin-top: -4px;
+  }
+
+  .popup-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .popup-contact:hover { background: #bf1f1f; }
+
+  .popup-type-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+
+  .popup-type-badge.donor   { background: rgba(214,40,40,0.15); color: var(--red); }
+  .popup-type-badge.patient { background: rgba(96,165,250,0.12); color: var(--blue); }
+
+  /* ── DISTANCE TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--text);
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── MOBILE LIST TOGGLE ── */
+  .list-toggle-btn {
+    display: none;
+    position: fixed;
+    bottom: 20px; right: 20px;
+    z-index: 500;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 52px; height: 52px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(214,40,40,0.4);
+  }
+
+  @media (max-width: 680px) {
+    .side-list { display: none; position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: 50vh; border-left: none; border-top: 1px solid var(--border); z-index: 400; }
+    .side-list.open { display: flex; }
+    .list-toggle-btn { display: flex; align-items: center; justify-content: center; }
+    .toolbar { gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-drop"></div>
+    BLOODLINE
+  </div>
+  <div style="font-size:12px;color:var(--text-muted);letter-spacing:0.06em;font-weight:500;">NEARBY MAP</div>
+</header>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="search-wrap" style="position:relative;">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="searchInput" placeholder="Search name or city..." oninput="onSearchInput()" onkeydown="onSearchKey(event)" autocomplete="off">
+    <div id="suggestBox" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;z-index:9999;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.5);max-height:260px;overflow-y:auto;"></div>
+  </div>
+
+  <select class="filter-select" id="bloodFilter" onchange="applyFilters()">
+    <option value="">All Blood Groups</option>
+    <option value="O+">O+</option>
+    <option value="O-">O−</option>
+    <option value="A+">A+</option>
+    <option value="A-">A−</option>
+    <option value="B+">B+</option>
+    <option value="B-">B−</option>
+    <option value="AB+">AB+</option>
+    <option value="AB-">AB−</option>
+  </select>
+
+  <button class="filter-btn active-filter" id="btnAll"     onclick="setTypeFilter('all')">All</button>
+  <button class="filter-btn"               id="btnDonors"  onclick="setTypeFilter('donor')">🔴 Donors</button>
+  <button class="filter-btn"               id="btnPatients"onclick="setTypeFilter('patient')">🔵 Patients</button>
+
+  <button class="locate-btn" onclick="locateMe()">📍 My Location</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div id="map"></div>
+
+  <!-- SIDE LIST -->
+  <div class="side-list" id="sideList">
+    <div class="list-header">
+      <span class="list-title">Nearby People</span>
+      <span class="list-count" id="listCount">4</span>
+    </div>
+    <div class="list-scroll" id="listScroll"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Donor</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Patient</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> You</div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile list toggle -->
+<button class="list-toggle-btn" onclick="document.getElementById('sideList').classList.toggle('open')">☰</button>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+const locations = [
+  { name:"Rahul Sharma",  type:"donor",   blood:"O+",  lat:19.0760, lng:72.8777, city:"Andheri, Mumbai",   contact:"rahul@example.com"  },
+  { name:"Amit Verma",    type:"patient", blood:"A+",  lat:19.0820, lng:72.8810, city:"Bandra, Mumbai",    contact:"amit@example.com"   },
+  { name:"Sneha Kapoor",  type:"donor",   blood:"B+",  lat:19.0900, lng:72.8750, city:"Dadar, Mumbai",     contact:"sneha@example.com"  },
+  { name:"Rohit Singh",   type:"patient", blood:"AB-", lat:19.0700, lng:72.8900, city:"Kurla, Mumbai",     contact:"rohit@example.com"  },
+  { name:"Priya Nair",    type:"donor",   blood:"O-",  lat:19.0650, lng:72.8700, city:"Worli, Mumbai",     contact:"priya@example.com"  },
+  { name:"Karan Mehta",   type:"donor",   blood:"A-",  lat:19.0980, lng:72.8830, city:"Goregaon, Mumbai",  contact:"karan@example.com"  },
+  { name:"Divya Joshi",   type:"patient", blood:"B-",  lat:19.0550, lng:72.8650, city:"Chembur, Mumbai",   contact:"divya@example.com"  },
+];
+
+let typeFilter = 'all';
+let userLatLng = null;
+let userMarker = null;
+let markers    = [];
+
+// Init map
+const map = L.map('map').setView([19.0760, 72.8777], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+function getInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+}
+
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
+}
+
+function createMarkerIcon(type) {
+  const color = type === 'donor' ? '#d62828' : '#60a5fa';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
+    <ellipse cx="14" cy="33" rx="5" ry="2.5" fill="rgba(0,0,0,0.25)"/>
+    <path d="M14 2 C14 2, 2 14, 2 21 A12 12 0 0 0 26 21 C26 14, 14 2, 14 2Z" fill="${color}" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+    <circle cx="14" cy="20" r="5" fill="rgba(255,255,255,0.25)"/>
+  </svg>`;
+  return L.divIcon({
+    html: svg,
+    className: '',
+    iconSize: [28, 36],
+    iconAnchor: [14, 36],
+    popupAnchor: [0, -38]
+  });
+}
+
+function buildPopup(loc) {
+  const dist = userLatLng ? `<div class="popup-row">📏 ${haversine(userLatLng.lat, userLatLng.lng, loc.lat, loc.lng)} km away</div>` : '';
+  return `
+    <div style="min-width:180px;">
+      <span class="popup-type-badge ${loc.type}">${loc.type === 'donor' ? '🔴 Donor' : '🔵 Patient'}</span>
+      <span class="popup-blood">${loc.blood}</span>
+      <div class="popup-name">${loc.name}</div>
+      <div class="popup-row">📍 ${loc.city}</div>
+      <div class="popup-row">✉️ ${loc.contact}</div>
+      ${dist}
+      <br>
+      <a class="popup-contact" href="mailto:${loc.contact}">✉️ Contact</a>
+    </div>`;
+}
+
+function renderAll() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const blood  = document.getElementById('bloodFilter').value;
+
+  markers.forEach(m => { map.removeLayer(m.marker); m.loc._marker = null; });
+  markers = [];
+
+  const filtered = locations.filter(loc => {
+    const matchType   = typeFilter === 'all' || loc.type === typeFilter;
+    const matchBlood  = !blood || loc.blood === blood;
+    const matchSearch = !search || loc.name.toLowerCase().includes(search) || loc.city.toLowerCase().includes(search);
+    return matchType && matchBlood && matchSearch;
+  });
+
+  // Sort by distance if user located
+  if (userLatLng) {
+    filtered.sort((a,b) => haversine(userLatLng.lat, userLatLng.lng, a.lat, a.lng) - haversine(userLatLng.lat, userLatLng.lng, b.lat, b.lng));
+  }
+
+  filtered.forEach(loc => {
+    const marker = L.marker([loc.lat, loc.lng], { icon: createMarkerIcon(loc.type) })
+      .addTo(map)
+      .bindPopup(buildPopup(loc), { maxWidth: 240 });
+    loc._marker = marker; // store reference directly on loc
+    markers.push({ marker, loc });
+  });
+
+  renderList(filtered);
+  document.getElementById('listCount').textContent = filtered.length;
+}
+
+function renderList(filtered) {
+  const scroll = document.getElementById('listScroll');
+  scroll.innerHTML = '';
+
+  if (!filtered.length) {
+    scroll.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;">No results found</div>`;
+    return;
+  }
+
+  filtered.forEach(loc => {
+    const dist = userLatLng ? `📏 ${haversine(userLatLng.lat, userLatLng.lng, loc.lat, loc.lng)} km` : loc.city;
+    const el = document.createElement('div');
+    el.className = 'list-item';
+    el.innerHTML = `
+      <div class="list-item-header">
+        <div class="list-avatar ${loc.type}">${getInitials(loc.name)}</div>
+        <div>
+          <div class="list-name">${loc.name}</div>
+          <div class="list-sub">${loc.city}</div>
+        </div>
+        <div class="list-blood">${loc.blood}</div>
+      </div>
+      <div class="list-item-footer">
+        <span class="dist-pill">📍 ${dist}</span>
+        <span class="type-pill ${loc.type}">${loc.type}</span>
+      </div>`;
+    el.onclick = () => {
+      map.setView([loc.lat, loc.lng], 15);
+      if (loc._marker) loc._marker.openPopup();
+    };
+    scroll.appendChild(el);
+  });
+}
+
+// ── SUGGEST BOX STYLES (injected once) ──
+(function(){
+  const s = document.createElement('style');
+  s.textContent = `
+    .suggest-item {
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.15s;
+    }
+    .suggest-item:last-child { border-bottom: none; }
+    .suggest-item:hover, .suggest-item.active { background: var(--red-glow); }
+    .suggest-icon { font-size: 15px; flex-shrink: 0; }
+    .suggest-label { flex: 1; }
+    .suggest-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .suggest-badge {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      padding: 2px 6px; border-radius: 4px; letter-spacing: 0.06em;
+    }
+    .suggest-badge.donor   { background: rgba(214,40,40,0.15); color: var(--red); }
+    .suggest-badge.patient { background: rgba(96,165,250,0.12); color: var(--60a5fa,#60a5fa); color: #60a5fa; }
+    .suggest-badge.city    { background: rgba(61,220,132,0.12); color: #3ddc84; }
+  `;
+  document.head.appendChild(s);
+})();
+
+let suggestIdx = -1;
+
+function onSearchInput() {
+  const q = document.getElementById('searchInput').value.trim();
+  applyFilters();
+  if (q.length < 1) { closeSuggest(); return; }
+  buildSuggestions(q);
+}
+
+function buildSuggestions(q) {
+  const box = document.getElementById('suggestBox');
+  const ql  = q.toLowerCase();
+  const items = [];
+
+  // 1. Match people (name or city) from locations data
+  locations.forEach(loc => {
+    if (loc.name.toLowerCase().includes(ql) || loc.city.toLowerCase().includes(ql)) {
+      items.push({ kind: 'person', label: loc.name, sub: loc.city, type: loc.type, blood: loc.blood, lat: loc.lat, lng: loc.lng });
+    }
+  });
+
+  // 2. Deduplicated city matches
+  const cities = new Map();
+  locations.forEach(loc => {
+    const parts = loc.city.split(',').map(s => s.trim());
+    parts.forEach(part => {
+      if (part.toLowerCase().includes(ql) && !cities.has(part)) {
+        cities.set(part, { lat: loc.lat, lng: loc.lng });
+      }
+    });
+  });
+  cities.forEach((coords, city) => {
+    if (!items.find(i => i.kind === 'city' && i.label === city)) {
+      items.push({ kind: 'city', label: city, sub: 'Jump to area', lat: coords.lat, lng: coords.lng });
+    }
+  });
+
+  if (!items.length) {
+    // 3. Fallback: Nominatim geocode
+    fetchNominatim(q);
+    return;
+  }
+
+  renderSuggest(items);
+}
+
+function fetchNominatim(q) {
+  const box = document.getElementById('suggestBox');
+  box.style.display = 'block';
+  box.innerHTML = `<div class="suggest-item"><span class="suggest-icon">⏳</span><div class="suggest-label">Searching "${q}"...</div></div>`;
+
+  fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&addressdetails=1`)
+    .then(r => r.json())
+    .then(results => {
+      if (!results.length) {
+        box.innerHTML = `<div class="suggest-item"><span class="suggest-icon">❌</span><div class="suggest-label">No results for "${q}"</div></div>`;
+        return;
+      }
+      const items = results.map(r => ({
+        kind: 'geocode',
+        label: r.display_name.split(',')[0],
+        sub: r.display_name.split(',').slice(1,3).join(',').trim(),
+        lat: parseFloat(r.lat),
+        lng: parseFloat(r.lon)
+      }));
+      renderSuggest(items);
+    })
+    .catch(() => {
+      box.innerHTML = `<div class="suggest-item"><span class="suggest-icon">⚠️</span><div class="suggest-label">Search unavailable offline</div></div>`;
+    });
+}
+
+function renderSuggest(items) {
+  const box = document.getElementById('suggestBox');
+  box.innerHTML = '';
+  suggestIdx = -1;
+
+  items.slice(0, 8).forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'suggest-item';
+    const icon  = item.kind === 'person' ? (item.type === 'donor' ? '🔴' : '🔵') : item.kind === 'city' ? '📍' : '🌍';
+    const badge = item.kind === 'person'
+      ? `<span class="suggest-badge ${item.type}">${item.type} · ${item.blood}</span>`
+      : `<span class="suggest-badge city">${item.kind === 'geocode' ? 'Map' : 'Area'}</span>`;
+
+    el.innerHTML = `
+      <span class="suggest-icon">${icon}</span>
+      <div class="suggest-label">
+        <div>${item.label}</div>
+        <div class="suggest-sub">${item.sub || ''}</div>
+      </div>
+      ${badge}`;
+
+    el.onmousedown = (e) => { e.preventDefault(); selectSuggest(item); };
+    box.appendChild(el);
+  });
+
+  box.style.display = items.length ? 'block' : 'none';
+}
+
+function selectSuggest(item) {
+  document.getElementById('searchInput').value = item.label;
+  closeSuggest();
+  map.setView([item.lat, item.lng], item.kind === 'person' ? 15 : 14, { animate: true });
+
+  if (item.kind === 'person') {
+    // open that person's marker popup
+    const found = markers.find(m => m.loc.name === item.label);
+    if (found) setTimeout(() => found.marker.openPopup(), 400);
+  }
+
+  applyFilters();
+}
+
+function onSearchKey(e) {
+  const box   = document.getElementById('suggestBox');
+  const items = box.querySelectorAll('.suggest-item');
+  if (!items.length) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    suggestIdx = Math.min(suggestIdx + 1, items.length - 1);
+    items.forEach((el, i) => el.classList.toggle('active', i === suggestIdx));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    suggestIdx = Math.max(suggestIdx - 1, 0);
+    items.forEach((el, i) => el.classList.toggle('active', i === suggestIdx));
+  } else if (e.key === 'Enter' && suggestIdx >= 0) {
+    e.preventDefault();
+    items[suggestIdx]?.dispatchEvent(new MouseEvent('mousedown'));
+  } else if (e.key === 'Escape') {
+    closeSuggest();
+  }
+}
+
+function closeSuggest() {
+  document.getElementById('suggestBox').style.display = 'none';
+  suggestIdx = -1;
+}
+
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('searchInput').contains(e.target)) closeSuggest();
+});
+
+function applyFilters() { renderAll(); }
+
+function setTypeFilter(type) {
+  typeFilter = type;
+  document.getElementById('btnAll').classList.toggle('active-filter',     type==='all');
+  document.getElementById('btnDonors').classList.toggle('active-filter',  type==='donor');
+  document.getElementById('btnPatients').classList.toggle('active-filter',type==='patient');
+  renderAll();
+}
+
+function locateMe() {
+  if (!navigator.geolocation) { showToast('Geolocation not supported'); return; }
+  showToast('📍 Locating you...');
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    if (userMarker) map.removeLayer(userMarker);
+    const youIcon = L.divIcon({
+      html: `<div style="width:16px;height:16px;background:#3ddc84;border-radius:50%;border:3px solid white;box-shadow:0 0 12px rgba(61,220,132,0.7);"></div>`,
+      className: '',
+      iconSize: [16,16],
+      iconAnchor: [8,8]
+    });
+    userMarker = L.marker([userLatLng.lat, userLatLng.lng], { icon: youIcon })
+      .addTo(map)
+      .bindPopup('<div style="color:#f5eded;font-family:DM Sans,sans-serif;font-size:13px;font-weight:600;">📍 You are here</div>');
+    map.setView([userLatLng.lat, userLatLng.lng], 14);
+    showToast('✅ Location found — distances updated');
+    renderAll();
+  }, () => showToast('❌ Could not get location'));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Initial render
+renderAll();
+</script>
+</body>
+</html>

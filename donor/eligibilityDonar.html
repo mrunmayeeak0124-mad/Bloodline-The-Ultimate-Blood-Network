@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BloodLine | Eligibility Checker Pro</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+}
+
+/* BACKGROUND */
+.bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a0000, #330000, #0d0000);
+    z-index: -1;
+}
+
+/* HEADER */
+header {
+    padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* NAVBAR */
+nav {
+    background: rgba(255,255,255,0.05);
+    text-align: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+nav a {
+    color: #ffccd5;
+    text-decoration: none;
+    margin: 0 20px;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: white;
+}
+
+/* MARQUEE */
+marquee {
+    color: #ff8fa3;
+    padding: 10px;
+    font-style: italic;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* TITLE */
+.title {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.title h1 {
+    font-size: 36px;
+}
+
+.title p {
+    color: #ffccd5;
+}
+
+/* CONTAINER */
+.container {
+    width: 90%;
+    max-width: 900px;
+    margin: auto;
+}
+
+/* CARD */
+.card {
+    background: #ffafc4;
+    border-left: 5px solid #ff4d6d;
+    padding: 20px;
+    border-radius: 15px;
+    margin: 15px 0;
+}
+
+.card p {
+    color: #4f000e;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    margin: 6px 0;
+    color: #5a0012;
+    cursor: pointer;
+}
+
+/* BUTTON */
+.btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    background: #ff4d6d;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #c9184a;
+}
+
+/* RESULT */
+.result {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    background: #1a0000;
+    border-left: 5px solid #ffb347;
+    display: none;
+    line-height: 1.6;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #ffbac7;
+    font-style: italic;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<header>
+    <div class="logo">❤️ BLOODLINE</div>
+    <a href="sectionDonar.html" style="color:#ffc9d3;"> ← Back</a>
+</header>
+
+<nav>
+    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10638672/">Awareness</a>
+    <a href="https://naco.mohfw.gov.in/sites/default/files/Letter%20reg.%20%20guidelines%20for%20blood%20donor%20selection%20&%20referral%20-2017.pdf">Guidelines</a>
+    <a href="https://www.ndtv.com/topic/blood-donation">Reports</a>
+    <a href="https://www.redcrossblood.org/donate-blood/blood-donation-process/what-happens-to-donated-blood.html">Journey</a>
+</nav>
+
+<marquee>
+"Advanced donor screening based on WHO & NACO standards."
+</marquee>
+
+<div class="title">
+    <h1>🧠 Donor Eligibility Checker</h1>
+    <p>Complete screening for safe blood donation</p>
+</div>
+
+<div class="container">
+
+<div class="card">
+<p>1. Age</p>
+<label><input type="radio" name="age" value="pass"> 18–65 years</label>
+<label><input type="radio" name="age" value="fail"> Below 18 / Above 65</label>
+</div>
+
+<div class="card">
+<p>2. Hemoglobin Level</p>
+<label><input type="radio" name="hb" value="pass"> ≥12.5 g/dL (Male) / ≥12.0 g/dL (Female)</label>
+<label><input type="radio" name="hb" value="fail"> Below / Unknown</label>
+</div>
+
+<div class="card">
+<p>3. Weight</p>
+<label><input type="radio" name="weight" value="pass"> ≥ 50 kg</label>
+<label><input type="radio" name="weight" value="fail"> Below 50 kg</label>
+</div>
+
+<div class="card">
+<p>4. Recent Illness / Surgery (last 14 days)</p>
+<label><input type="radio" name="illness" value="pass"> No</label>
+<label><input type="radio" name="illness" value="fail"> Yes</label>
+</div>
+
+<div class="card">
+<p>5. High-Risk Exposure (last 12 months)</p>
+<label><input type="radio" name="risk" value="pass"> No</label>
+<label><input type="radio" name="risk" value="fail"> Yes / Not sure</label>
+</div>
+
+<div class="card">
+<p>6. Pregnancy / Breastfeeding</p>
+<label><input type="radio" name="preg" value="pass"> No / Not applicable</label>
+<label><input type="radio" name="preg" value="fail"> Yes</label>
+</div>
+
+<button class="btn" onclick="checkEligibility()">🔍 Generate Fitness Report</button>
+
+<div id="result" class="result"></div>
+
+</div>
+
+<footer>
+"Accurate screening ensures safe donation for both donor and recipient."
+</footer>
+
+<script>
+function checkEligibility() {
+
+let responses = {
+    age: document.querySelector('input[name="age"]:checked'),
+    hb: document.querySelector('input[name="hb"]:checked'),
+    weight: document.querySelector('input[name="weight"]:checked'),
+    illness: document.querySelector('input[name="illness"]:checked'),
+    risk: document.querySelector('input[name="risk"]:checked'),
+    preg: document.querySelector('input[name="preg"]:checked')
+};
+
+let resultBox = document.getElementById("result");
+
+for (let key in responses) {
+    if (!responses[key]) {
+        resultBox.style.display = "block";
+        resultBox.innerHTML = "⚠️ Please answer all screening questions.";
+        return;
+    }
+}
+
+let issues = [];
+let advice = [];
+let waitTime = "Eligible now";
+
+/* LOGIC */
+if (responses.age.value === "fail") {
+    issues.push("Age not within 18–65 years.");
+}
+
+if (responses.hb.value === "fail") {
+    issues.push("Low hemoglobin level.");
+    advice.push("Increase iron intake (spinach, dates, jaggery).");
+    waitTime = "Recheck after 1–2 months";
+}
+
+if (responses.weight.value === "fail") {
+    issues.push("Weight below 50 kg.");
+    advice.push("Maintain healthy weight before donating.");
+    waitTime = "Until weight improves";
+}
+
+if (responses.illness.value === "fail") {
+    issues.push("Recent illness/surgery.");
+    advice.push("Wait until full recovery.");
+    waitTime = "2–6 weeks depending on condition";
+}
+
+if (responses.risk.value === "fail") {
+    issues.push("Recent high-risk exposure.");
+    advice.push("Mandatory deferral for safety.");
+    waitTime = "6–12 months";
+}
+
+if (responses.preg.value === "fail") {
+    issues.push("Pregnancy/breastfeeding.");
+    advice.push("Wait until post-recovery period.");
+    waitTime = "6 months after delivery";
+}
+
+/* FINAL STATUS */
+let status = "";
+if (issues.length === 0) {
+    status = "✅ ELIGIBLE";
+} else if (issues.length <= 2) {
+    status = "⚠️ TEMPORARY DEFERRAL";
+} else {
+    status = "❌ NOT ELIGIBLE CURRENTLY";
+}
+
+/* OUTPUT */
+resultBox.style.display = "block";
+resultBox.innerHTML = `
+<h3>${status}</h3>
+
+<b>🧾 Screening Summary:</b><br>
+${issues.length === 0 ? "All parameters within safe limits." : issues.map(i => "• " + i).join("<br>")}
+
+<br><br>
+
+<b>💡 Recommendations:</b><br>
+${advice.length === 0 ? "Maintain current health and proceed to donation." : advice.map(a => "• " + a).join("<br>")}
+
+<br><br>
+
+<b>⏳ Suggested Wait Time:</b><br>
+${waitTime}
+
+<br><br>
+
+<b>📌 Next Step:</b><br>
+${issues.length === 0 
+? "Proceed to book your donation appointment." 
+: "Consult a doctor or blood bank before donating."}
+`;
+}
+</script>
+
+</body>
+</html>

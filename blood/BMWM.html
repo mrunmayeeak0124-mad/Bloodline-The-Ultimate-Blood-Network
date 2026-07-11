@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodline | BMWM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-red: #ff3131;
+            --bg-light: #f8f9fa;
+            --text-dark: #0f172a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 80px;
+        }
+
+        /* Branding */
+        .brand-container {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-mark {
+            width: 30px;
+            height: 30px;
+            background: var(--primary-red);
+            border-radius: 50% 50% 50% 10%;
+            transform: rotate(-45deg);
+        }
+
+        .brand-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+        }
+        .brand-text span { color: var(--primary-red); }
+
+        /* Back Navigation */
+        .back-home {
+            position: absolute;
+            top: 35px;
+            right: 40px;
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+            padding: 8px 20px;
+            border-radius: 12px;
+            background: white;
+            transition: 0.3s;
+        }
+        .back-home:hover { background: var(--primary-red); color: white; border-color: var(--primary-red); }
+
+        /* Header */
+        header {
+            margin-top: 120px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: 12px;
+            margin: 0;
+        }
+
+        .long-form {
+            display: block;
+            margin-top: 10px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+
+        /* Waste Grid */
+        .waste-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .waste-card {
+            padding: 35px;
+            border-radius: 30px;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease;
+        }
+        .waste-card:hover { transform: translateY(-10px); }
+
+        .waste-card h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .waste-card p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #475569;
+        }
+
+        .treatment-tag {
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.5);
+        }
+
+        /* Specific Color Intensities */
+        .yellow-box { background-color: #fff9db; border-left: 8px solid #fcc419; }
+        .red-box    { background-color: #fff5f5; border-left: 8px solid #ff6b6b; }
+        .white-box  { background-color: #f8f9fa; border-left: 8px solid #adb5bd; border: 1px solid #dee2e6; }
+        .blue-box   { background-color: #e7f5ff; border-left: 8px solid #339af0; }
+
+        /* Spill Management Banner */
+        .spill-info {
+            margin-top: 50px;
+            width: 90%;
+            max-width: 1200px;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .spill-icon { font-size: 2rem; }
+        .spill-text b { color: var(--primary-red); }
+
+    </style>
+</head>
+<body>
+
+    <div class="brand-container">
+        <div class="logo-mark"></div>
+        <h1 class="brand-text">blood<span>line</span></h1>
+    </div>
+
+    <a href="trial1.html" class="back-home">← DASHBOARD</a>
+
+    <header>
+        <h1>BMWM</h1>
+        <span class="long-form">(Biomedical Waste Management)</span>
+    </header>
+
+    <div class="waste-grid">
+        <div class="waste-card yellow-box">
+            <h3>Yellow Category</h3>
+            <p><b>Items:</b> Soiled waste, expired blood bags, anatomical waste, and gauze contaminated with blood.</p>
+            <span class="treatment-tag">Incineration</span>
+        </div>
+
+        <div class="waste-card red-box">
+            <h3>Red Category</h3>
+            <p><b>Items:</b> Contaminated plastic waste, recycled sets, tubing, gloves, and urine bags (no needles).</p>
+            <span class="treatment-tag">Autoclaving / Shredding</span>
+        </div>
+
+        <div class="waste-card white-box">
+            <h3>White Category</h3>
+            <p><b>Items:</b> Waste sharps including needles, syringes with fixed needles, and discarded scalpels.</p>
+            <span class="treatment-tag">Sterilization & Foundry</span>
+        </div>
+
+        <div class="waste-card blue-box">
+            <h3>Blue Category</h3>
+            <p><b>Items:</b> Glassware, broken slides, medicine vials, and metallic body implants.</p>
+            <span class="treatment-tag">Chemical Disinfection</span>
+        </div>
+    </div>
+
+    <div class="spill-info">
+        <div class="spill-icon">⚠️</div>
+        <div class="spill-text">
+            <b>Emergency Protocol:</b> All blood spills must be treated with <b>10% Sodium Hypochlorite</b> for 30 minutes before cleaning to ensure total decontamination.
+        </div>
+    </div>
+
+</body>
+</html>

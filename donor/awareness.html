@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BloodLine | Fear & Awareness</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+}
+
+/* BACKGROUND */
+.bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a0000, #330000, #0d0000);
+    z-index: -1;
+}
+
+/* HEADER */
+header {
+    padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* NAV */
+nav {
+    background: rgba(255,255,255,0.05);
+    text-align: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+nav a {
+    color: #ffccd5;
+    text-decoration: none;
+    margin: 0 20px;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: white;
+}
+
+/* MARQUEE */
+marquee {
+    color: #ff8fa3;
+    padding: 10px;
+    font-style: italic;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* TITLE */
+.title {
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.title h1 {
+    font-size: 36px;
+}
+
+.title p {
+    color: #ffccd5;
+}
+
+/* CONTAINER */
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* MYTH CARDS */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    gap: 20px;
+}
+
+.card {
+    background: #ffafc4;
+    border-left: 5px solid #ff4d6d;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.card h3 {
+    color: #4f000e;
+    margin-bottom: 10px;
+}
+
+.card p {
+    color: #5a0012;
+    line-height: 1.5;
+}
+
+/* STATS */
+.stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 30px 0;
+}
+
+.stat-box {
+    flex: 1;
+    background: #ffccd5;
+    color: #4f000e;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+/* FAQ */
+.faq {
+    margin-top: 30px;
+}
+
+details {
+    background: #ffafc4;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 15px;
+}
+
+summary {
+    font-weight: bold;
+    cursor: pointer;
+    color: #4f000e;
+}
+
+/* BUTTON */
+.btn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    border-radius: 30px;
+    border: none;
+    background: #ff4d6d;
+    color: white;
+    cursor: pointer;
+}
+
+/* TESTIMONIAL */
+.testimonial {
+    margin-top: 30px;
+    background: #ffccd5;
+    color: #4f000e;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #ffbac7;
+    font-style: italic;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<header>
+    <div class="logo">❤️ BLOODLINE</div>
+    <a href="sectionDonar.html" style="color:#ffc9d3;"> ← Dashboard</a>
+</header>
+
+<nav>
+    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10638672/">Awareness</a>
+    <a href="https://naco.mohfw.gov.in/">Guidelines</a>
+    <a href="https://www.ndtv.com/topic/blood-donation">Reports</a>
+    <a href="https://www.redcrossblood.org/donate-blood/blood-donation-process/what-happens-to-donated-blood.html">Journey</a>
+</nav>
+
+<marquee>
+"Myths create fear, facts create heroes — educate yourself and save lives."
+</marquee>
+
+<div class="title">
+    <h1>🧠 Fear to Fearless</h1>
+    <p>Breaking myths and building confidence in blood donation</p>
+</div>
+
+<div class="container">
+
+<!-- MYTHS -->
+<div class="grid">
+
+<div class="card">
+<h3>❌ Myth: Blood donation is very painful</h3>
+<p>✅ Reality: Only a small needle prick lasting 2–3 seconds. Most donors describe it as a mild pinch.</p>
+</div>
+
+<div class="card">
+<h3>❌ Myth: I will feel weak for days</h3>
+<p>✅ Fact: Body replaces fluids within 24 hours. Proper hydration prevents weakness.</p>
+</div>
+
+<div class="card">
+<h3>❌ Myth: Blood donation reduces immunity</h3>
+<p>✅ Truth: No impact on immune system. Blood cells regenerate quickly.</p>
+</div>
+
+<div class="card">
+<h3>❌ Myth: Only rare blood groups matter</h3>
+<p>✅ Reality: Every blood group is needed daily in hospitals.</p>
+</div>
+
+</div>
+
+<!-- STATS -->
+<div class="stats">
+<div class="stat-box">📊 38% people avoid donating due to fear</div>
+<div class="stat-box">💡 89% become repeat donors after first donation</div>
+<div class="stat-box">🌍 Demand every 2 seconds worldwide</div>
+</div>
+
+<!-- FAQ -->
+<div class="faq">
+<h2>💬 Frequently Asked Questions</h2>
+
+<details>
+<summary>Can I donate if I take BP/thyroid medicines?</summary>
+<p>Yes, if condition is controlled. Always inform the doctor before donation.</p>
+</details>
+
+<details>
+<summary>What if I feel dizzy?</summary>
+<p>Very rare. Staff are trained and provide immediate care like rest and hydration.</p>
+</details>
+
+<details>
+<summary>How often can I donate?</summary>
+<p>Every 3 months (men) and 4 months (women), depending on health.</p>
+</details>
+
+<button class="btn" onclick="window.open('https://www.who.int/campaigns/world-blood-donor-day')">
+🌐 Learn More (WHO)
+</button>
+
+</div>
+
+<!-- TESTIMONIAL -->
+<div class="testimonial">
+<h3>⭐ Real Donor Stories</h3>
+<p>"I was scared at first, but after learning the facts, I became a regular donor." – Meera</p>
+<p>"Education removed my fear completely. Now I donate every year." – Ramesh</p>
+</div>
+
+</div>
+
+<footer>
+"Awareness is the first step to saving lives."
+</footer>
+
+</body>
+</html>

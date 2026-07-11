@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BloodLine | Smart Dashboard Pro</title>
+
+<!-- CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;color:white;}
+
+.bg{
+position:fixed;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#1a0000,#330000,#0d0000);
+z-index:-1;
+}
+
+header{
+padding:20px 50px;
+display:flex;
+justify-content:space-between;
+}
+
+.logo{font-size:28px;font-weight:bold;}
+
+nav{
+background:rgba(255,255,255,0.05);
+text-align:center;
+padding:12px;
+}
+
+nav a{
+color:#ffccd5;
+margin:0 20px;
+text-decoration:none;
+}
+
+marquee{
+color:#ff8fa3;
+padding:10px;
+font-style:italic;
+}
+
+.container{
+width:90%;
+max-width:1100px;
+margin:30px auto;
+}
+
+/* MORE SPACE BETWEEN SECTIONS */
+.section{
+margin-top:40px;
+}
+
+/* EXTRA SPACE BEFORE MILESTONE */
+.milestone{
+margin-top:80px;
+}
+
+/* CARD */
+.card{
+background:#ffafc4;
+color:#4f000e;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+}
+
+/* GRID */
+.grid{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.box{
+flex:1;
+background:#ffccd5;
+color:#4f000e;
+padding:20px;
+border-radius:15px;
+text-align:center;
+}
+
+/* INPUT */
+input,select{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:20px;
+border:none;
+}
+
+/* BUTTON */
+.btn{
+margin-top:10px;
+padding:10px 20px;
+border:none;
+border-radius:25px;
+background:#ff4d6d;
+color:white;
+cursor:pointer;
+}
+
+/* PROGRESS */
+.progress{
+background:#2c5a66;
+height:18px;
+border-radius:20px;
+overflow:hidden;
+}
+
+.bar{
+height:18px;
+background:#ff4d6d;
+width:0%;
+}
+
+/* RESULT */
+.result{
+margin-top:10px;
+background:#ffc8d9;
+padding:15px;
+border-radius:10px;
+}
+
+/* CHART BOX */
+.chart-box{
+background:#ffccd5;
+padding:20px;
+border-radius:15px;
+}
+
+/* FOOTER */
+footer{
+text-align:center;
+padding:30px;
+color:#ffbac7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<header>
+<div class="logo">❤️ BLOODLINE</div>
+<a href="sectionDonar.html" style="color:#ffc9d3;">← Dashboard</a>
+</header>
+
+<nav>
+<a href="#">Awareness</a>
+<a href="#">Guidelines</a>
+<a href="#">Reports</a>
+<a href="#">Journey</a>
+</nav>
+
+<marquee>
+"Visualize your impact — data makes motivation stronger."
+</marquee>
+
+<div class="container">
+
+<!-- INPUT -->
+<div class="card">
+<h2>📥 Donor Dashboard Input</h2>
+
+<label>Total Donations</label>
+<input type="number" id="donations">
+
+<label>Last Donation Date</label>
+<input type="date" id="lastDate">
+
+<label>Gender</label>
+<select id="gender">
+<option value="90">Male (90 days)</option>
+<option value="120">Female (120 days)</option>
+</select>
+
+<button class="btn" onclick="updateAll()">Update Dashboard</button>
+
+<div id="result" class="result" style="display:none;"></div>
+</div>
+
+<!-- STATS -->
+<div class="grid section">
+
+<div class="box">
+<h3 id="total">0</h3>
+<p>Total Donations</p>
+</div>
+
+<div class="box">
+<h3 id="lives">0</h3>
+<p>Lives Saved</p>
+</div>
+
+<div class="box">
+<h3 id="rank">-</h3>
+<p>Donor Rank</p>
+</div>
+
+</div>
+
+<!-- CHARTS -->
+<div class="grid section">
+
+<div class="chart-box" style="flex:1;">
+<h3>📊 Donation Growth</h3>
+<canvas id="donationChart"></canvas>
+</div>
+
+<div class="chart-box" style="flex:1;">
+<h3>🩸 Lives Saved</h3>
+<canvas id="livesChart"></canvas>
+</div>
+
+</div>
+
+<!-- PROGRESS -->
+<div class="card milestone">
+<h3>🏆 Milestone Progress</h3>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<p id="milestone"></p>
+</div>
+
+<!-- TIMELINE -->
+<div class="card section">
+<h3>📅 Donation Timeline</h3>
+<ul id="timeline"></ul>
+</div>
+
+<!-- BADGES -->
+<div class="card section">
+<h3>🎖️ Achievements</h3>
+<div id="badges"></div>
+</div>
+
+<!-- GOAL -->
+<div class="card section">
+<h3>🎯 Yearly Goal (3 Donations)</h3>
+<progress id="goalBar" value="0" max="3" style="width:100%;height:20px;"></progress>
+</div>
+
+</div>
+
+<footer>
+"Consistency turns donors into heroes."
+</footer>
+
+<script>
+
+let donationChart, livesChart;
+
+function updateAll(){
+
+let d = parseInt(document.getElementById("donations").value);
+let last = document.getElementById("lastDate").value;
+let gap = parseInt(document.getElementById("gender").value);
+
+if(!d || !last){
+alert("Fill all fields");
+return;
+}
+
+/* CALCULATIONS */
+let lives = d * 3;
+
+let rank="Beginner";
+if(d>=3) rank="Active Donor";
+if(d>=5) rank="Life Saver";
+if(d>=10) rank="Hero";
+
+/* NEXT DATE */
+let next = new Date(last);
+next.setDate(next.getDate() + gap);
+
+let today = new Date();
+let daysLeft = Math.ceil((next - today)/(1000*60*60*24));
+
+/* RESULT */
+document.getElementById("result").style.display="block";
+document.getElementById("result").innerHTML = `
+📅 Next Eligible Date: <b>${next.toDateString()}</b><br>
+⏳ Days Remaining: ${daysLeft > 0 ? daysLeft : 0}<br>
+🩸 Lives Saved: ${lives}
+`;
+
+/* UPDATE STATS */
+document.getElementById("total").innerText = d;
+document.getElementById("lives").innerText = lives;
+document.getElementById("rank").innerText = rank;
+
+/* PROGRESS */
+let percent = Math.min((d/10)*100,100);
+document.getElementById("bar").style.width = percent+"%";
+document.getElementById("milestone").innerText = "Next goal: 10 donations";
+
+/* TIMELINE */
+let timeline="";
+for(let i=1;i<=d;i++){
+timeline += `<li>Donation ${i}</li>`;
+}
+document.getElementById("timeline").innerHTML = timeline;
+
+/* BADGES */
+let badges="";
+if(d>=1) badges+="🥇 First Drop<br>";
+if(d>=3) badges+="💪 Regular Donor<br>";
+if(d>=5) badges+="🩸 Life Saver<br>";
+if(d>=10) badges+="🏆 Hero<br>";
+document.getElementById("badges").innerHTML = badges;
+
+/* GOAL */
+document.getElementById("goalBar").value = d;
+
+/* CHART DATA */
+let labels=[];
+let donationData=[];
+let livesData=[];
+
+for(let i=1;i<=d;i++){
+labels.push("D"+i);
+donationData.push(i);
+livesData.push(i*3);
+}
+
+/* DESTROY OLD CHARTS */
+if(donationChart) donationChart.destroy();
+if(livesChart) livesChart.destroy();
+
+/* CREATE CHARTS */
+donationChart = new Chart(document.getElementById("donationChart"), {
+type:'line',
+data:{
+labels:labels,
+datasets:[{label:'Donations',data:donationData}]
+}
+});
+
+livesChart = new Chart(document.getElementById("livesChart"), {
+type:'bar',
+data:{
+labels:labels,
+datasets:[{label:'Lives Saved',data:livesData}]
+}
+});
+
+}
+
+</script>
+
+</body>
+</html>

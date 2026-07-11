@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodLine - Our Mission</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+          --red:        #e02020;
+          --red-deep:   #b01515;
+          --red-light:  #fff1f1;
+          --red-mid:    #ffd6d6;
+          --bg:         #fdf6f6;
+          --surface:    #ffffff;
+          --surface2:   #fff8f8;
+          --border:     #f0d4d4;
+          --text:       #1a0a0a;
+          --text-sub:   #7a4a4a;
+          --text-muted: #b08080;
+          --shadow:     0 4px 28px rgba(180,60,60,0.10);
+          --shadow-lg:  0 12px 48px rgba(180,60,60,0.16);
+          --radius:     20px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); padding-top: 110px; }
+
+        header {
+          position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+          background: rgba(253,246,246,0.92); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+          border-bottom: 1.5px solid var(--border); padding: 0 5vw; height: 75px;
+          display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 20px rgba(180,60,60,0.07);
+        }
+        .brand-name { font-family: 'Fraunces', serif; font-weight: 900; font-size: 24px; color: var(--red); }
+        header div:last-child { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+        nav { position: fixed; top: 75px; left: 0; right: 0; z-index: 190; background: var(--red-light); border-bottom: 1.5px solid var(--red-mid); padding: 8px 5vw; display: flex; gap: 20px; }
+        nav a { text-decoration: none; color: var(--text-sub); font-weight: 600; font-size: 14px; }
+        nav a:hover { color: var(--red); }
+
+        .container {
+            max-width: 1000px; margin: 40px auto 80px; width: 90%;
+            background: var(--surface); border: 1.5px solid var(--border);
+            border-radius: var(--radius); padding: 50px 5vw; box-shadow: var(--shadow-lg);
+        }
+
+        h1 { font-family: 'Fraunces', serif; font-weight: 900; font-size: 42px; text-align: center; margin-bottom: 6px; }
+        .subtitle { text-align: center; color: var(--red); font-style: italic; font-weight: 600; font-size: 15px; margin-bottom: 44px; }
+
+        .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        
+        .mission-card {
+            background: var(--surface2); padding: 30px; border-radius: 16px;
+            border-left: 5px solid var(--red); box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .mission-card:hover { transform: translateY(-4px); border-left-color: var(--red-deep); box-shadow: var(--shadow-lg); }
+        .mission-card h3 { font-family: 'Fraunces', serif; font-size: 20px; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .mission-card p { font-size: 14.5px; color: var(--text-sub); line-height: 1.65; }
+
+        .vision-statement {
+            margin-top: 50px; padding: 40px 30px; background: var(--red-deep);
+            color: white; border-radius: 16px; text-align: center;
+            box-shadow: 0 8px 32px rgba(176,21,21,0.25);
+        }
+        .vision-statement h2 { font-family: 'Fraunces', serif; font-size: 28px; margin-bottom: 12px; }
+        .vision-statement p { font-size: 18px; font-weight: 500; opacity: 0.9; }
+
+        footer { padding: 40px 5vw; text-align: center; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        
+        @media (max-width: 768px) { .mission-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div style="display:flex; align-items:center; gap:11px;">
+            <span style="font-size:24px;">❤️</span>
+            <span class="brand-name">BLOOD-LINE</span>
+        </div>
+        <div>Our Purpose</div>
+    </header>
+
+    <nav>
+        <a href="HomePage.html">Home</a>
+        <a href="ContactUs.html">Contact Us</a>
+    </nav>
+
+    <div class="container">
+        <h1>Our Mission & Vision</h1>
+        <p class="subtitle">"Driven by technology, fueled by humanity."</p>
+
+        <div class="mission-grid">
+            <div class="mission-card">
+                <h3><span>⚡</span> Real-Time Connection</h3>
+                <p>Our primary mission is to eliminate the search-time for blood by providing an instant, location-based network that connects donors to recipients in seconds.</p>
+            </div>
+            <div class="mission-card">
+                <h3><span>🌍</span> Community Heroes</h3>
+                <p>We aim to build a global community of voluntary donors where every individual is empowered to share the gift of life through a simple, transparent platform.</p>
+            </div>
+            <div class="mission-card">
+                <h3><span>🎓</span> Awareness & Education</h3>
+                <p>To transform blood donation from an "emergency-only" thought into a proactive lifestyle. We educate and inspire regular, unpaid donations.</p>
+            </div>
+            <div class="mission-card">
+                <h3><span>🛡️</span> Zero Delays</h3>
+                <p>To ensure that no life is ever lost due to the unavailability of blood or lack of information. We make "Finding a Donor" the easiest part of a medical crisis.</p>
+            </div>
+        </div>
+
+        <div class="vision-statement">
+            <h2>Our Vision</h2>
+            <p>"To create a world where safe blood is available to everyone, everywhere, at the exact moment they need it."</p>
+        </div>
+    </div>
+
+    <footer>
+        Blood Line | Every drop counts. Every mission saves a life.
+    </footer>
+</body>
+</html>

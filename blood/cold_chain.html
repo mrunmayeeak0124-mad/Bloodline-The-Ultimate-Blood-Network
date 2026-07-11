@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodline | Cold Chain</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-red: #ff3131;
+            --bg-light: #f8f9fa;
+            --glass: rgba(255, 255, 255, 0.8);
+            --safe-blue: #0984e3;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Branding */
+        .brand-container {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-mark {
+            width: 30px;
+            height: 30px;
+            background: var(--primary-red);
+            border-radius: 50% 50% 50% 10%;
+            transform: rotate(-45deg);
+        }
+
+        .brand-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .brand-text span { color: var(--primary-red); }
+
+        /* Back Button */
+        .back-home {
+            position: absolute;
+            top: 35px;
+            right: 40px;
+            text-decoration: none;
+            color: #636e72;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.3s;
+        }
+        .back-home:hover { color: var(--primary-red); }
+
+        /* Header Section */
+        header {
+            margin-top: 120px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -1.5px;
+            text-transform: uppercase;
+        }
+
+        .status-badge {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 16px;
+            background: #e1f5fe;
+            color: var(--safe-blue);
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        /* Information Grid */
+        .data-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 60px;
+            width: 90%;
+            max-width: 900px;
+        }
+
+        .info-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 35px;
+            padding: 50px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #636e72;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        /* Temperature Style */
+        .temp-display {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--safe-blue);
+            margin: 0;
+        }
+
+        .temp-unit {
+            font-size: 1.5rem;
+            vertical-align: top;
+            margin-left: 5px;
+        }
+
+        /* Date Style */
+        .date-display {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-top: 15px;
+        }
+
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            background: #f1f2f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 1.5rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="brand-container">
+        <div class="logo-mark"></div>
+        <h1 class="brand-text">blood<span>line</span></h1>
+    </div>
+
+    <a href="trial1.html" class="back-home">← BACK TO DASHBOARD</a>
+
+    <header>
+        <h1>Cold Chain Maintenance</h1>
+        <div class="status-badge">● SYSTEM OPERATIONAL</div>
+    </header>
+
+    <div class="data-container">
+        <div class="info-card">
+            <div class="icon-circle">❄️</div>
+            <span class="label">Current Temperature</span>
+            <p class="temp-display" id="tempText">4.2<span class="temp-unit">°C</span></p>
+        </div>
+
+        <div class="info-card">
+            <div class="icon-circle">📅</div>
+            <span class="label">Last Maintenance</span>
+            <p class="date-display">12 April 2026</p>
+            <p style="font-size: 0.8rem; color: #2ecc71; font-weight: 700; margin-top: 10px;">Status: Certified</p>
+        </div>
+    </div>
+
+    <script>
+        // Simulating a real-time safe temperature below 8 degrees
+        window.onload = function() {
+            const randomTemp = (Math.random() * (7.9 - 2.0) + 2.0).toFixed(1);
+            document.getElementById('tempText').innerHTML = randomTemp + '<span class="temp-unit">°C</span>';
+        };
+    </script>
+
+</body>
+</html>

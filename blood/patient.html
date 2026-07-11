@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BloodLine — Emergency Receiver Portal</title>
+
+  <!-- Google Fonts: Inter & Poppins for premium readability -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 Pro/Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    /* ----- MODERN DESIGN SYSTEM ----- */
+    :root {
+      --primary: #C62828;         /* Premium medical crimson */
+      --primary-dark: #8E1B1B;    /* Deep blood red */
+      --accent: #FF5252;          /* Vivid alert red */
+      --success: #2E7D32;         /* Success green */
+      --bg-canvas: #FFF6F6;       /* Clean, soft tinted workspace */
+      --surface: #FFFFFF;
+      --text-main: #2A1B1B;
+      --text-muted: #6E5656;
+      --border: #F0D7D7;
+      --focus-ring: rgba(198, 40, 40, 0.12);
+      --radius-lg: 32px;
+      --radius-md: 16px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-canvas);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ----- APPLICATION CONTAINER ----- */
+    .app-card {
+      max-width: 850px;
+      width: 100%;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 56px;
+      box-shadow: 0 24px 70px rgba(142, 27, 27, 0.07);
+      border: 1px solid var(--border);
+      position: relative;
+      transition: max-width 0.4s ease;
+    }
+
+    /* Target wrapper adjustment when displaying success view */
+    .app-card.success-mode {
+      max-width: 650px;
+      text-align: center;
+    }
+
+    /* ----- UTILITY HEADER BLOCK ----- */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+    }
+
+    .back-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+
+    .back-nav:hover {
+      color: var(--primary);
+      transform: translateX(-4px);
+    }
+
+    .live-badge {
+      background: rgba(198, 40, 40, 0.08);
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .live-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.4; }
+      100% { transform: scale(0.9); opacity: 1; }
+    }
+
+    /* ----- BRANDING HEADER ----- */
+    .form-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #FDF0F0;
+      padding-bottom: 28px;
+    }
+
+    .form-header .icon-frame {
+      background: linear-gradient(135deg, #FFF0F0 0%, #FFE2E2 100%);
+      color: var(--primary);
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+      box-shadow: 0 8px 20px rgba(198, 40, 40, 0.05);
+    }
+
+    .form-header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #150B0B;
+      line-height: 1.2;
+    }
+
+    .form-header h1 span {
+      color: var(--primary);
+    }
+
+    .form-header p {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ----- INPUT ARCHITECTURE ----- */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px 30px;
+    }
+
+    .full-width {
+      grid-column: span 2;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    label i {
+      color: var(--primary);
+      font-size: 0.95rem;
+      opacity: 0.85;
+    }
+
+    label .required-dot {
+      color: var(--accent);
+      margin-left: 2px;
+    }
+
+    input, select, textarea {
+      padding: 14px 18px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.98rem;
+      background: #FFFBFB;
+      color: var(--text-main);
+      transition: var(--transition);
+      outline: none;
+      width: 100%;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #A38E8E;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 5px var(--focus-ring);
+      background: var(--surface);
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23C62828' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 18px;
+      padding-right: 45px;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    /* ----- URGENCY SELECTOR CARDS ----- */
+    .urgency-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .urgency-card {
+      position: relative;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      background: #FFFBFB;
+      transition: var(--transition);
+    }
+
+    .urgency-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .urgency-card .card-title {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .urgency-card .card-desc {
+      display: block;
+      font-size: 0.72rem;
+      color: #A38E8E;
+      line-height: 1.2;
+    }
+
+    .urgency-card:hover {
+      border-color: #DBB8B8;
+      transform: translateY(-1px);
+    }
+
+    .urgency-card:has(input[value="Low"]:checked) { border-color: #4CAF50; background: #F4FBF4; }
+    .urgency-card:has(input[value="Low"]:checked) .card-title { color: #2E7D32; }
+    
+    .urgency-card:has(input[value="Medium"]:checked) { border-color: #FF9800; background: #FFF9F0; }
+    .urgency-card:has(input[value="Medium"]:checked) .card-title { color: #E65100; }
+
+    .urgency-card:has(input[value="High"]:checked) { border-color: var(--accent); background: #FFF2F2; }
+    .urgency-card:has(input[value="High"]:checked) .card-title { color: var(--primary); }
+
+    .urgency-card:has(input[value="Critical"]:checked) { 
+      border-color: var(--primary); 
+      background: linear-gradient(135deg, #FFF0F0 0%, #FFE6E6 100%);
+      box-shadow: 0 8px 20px rgba(198, 40, 40, 0.1);
+    }
+    .urgency-card:has(input[value="Critical"]:checked) .card-title { color: var(--primary-dark); font-weight: 700; }
+
+    /* ----- INFO PANEL CONTAINER ----- */
+    .alert-banner {
+      background: #FFF5F5;
+      border-left: 4px solid var(--primary);
+      padding: 18px 22px;
+      border-radius: var(--radius-md);
+      display: flex;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .alert-banner i {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-top: 2px;
+    }
+
+    .alert-banner p {
+      font-size: 0.88rem;
+      color: #5C4040;
+      line-height: 1.5;
+    }
+
+    /* ----- SUCCESS VIEW DECORATIONS ----- */
+    .success-icon-wrap {
+      width: 100px;
+      height: 100px;
+      background: #E8F5E9;
+      color: var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      margin: 0 auto 32px;
+      position: relative;
+      animation: scaleUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    .success-icon-wrap::after {
+      content: '';
+      position: absolute;
+      width: 116px;
+      height: 116px;
+      border: 2px dashed var(--success);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: rotateDashed 20s linear infinite;
+    }
+
+    .success-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .status-box {
+      background: #FFFBFB;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 40px;
+      text-align: left;
+    }
+
+    .status-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-main);
+    }
+
+    .live-tracker-msg {
+      color: var(--primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .live-tracker-msg i {
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+
+    .timeline-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .t-step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      font-size: 0.9rem;
+    }
+
+    .t-step i {
+      margin-top: 3px;
+      width: 16px;
+    }
+
+    .t-step.done { color: var(--success); font-weight: 500; }
+    .t-step.active { color: var(--primary); font-weight: 600; }
+    .t-step.pending { color: #A38E8E; }
+
+    @keyframes scaleUp {
+      0% { transform: scale(0.4); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes rotateDashed {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ----- ACTION CONTROL BUTTONS ----- */
+    .action-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 36px;
+    }
+
+    .success-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px 32px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 1rem;
+      border: 2px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-submit, .btn-dashboard {
+      background: var(--primary);
+      color: var(--surface);
+      flex: 2;
+      box-shadow: 0 8px 24px rgba(198, 40, 40, 0.2);
+    }
+
+    .btn-submit:hover, .btn-dashboard:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-reset, .btn-home {
+      background: #F5EAE9;
+      color: #523B3B;
+      flex: 1;
+    }
+
+    .btn-reset:hover, .btn-home:hover {
+      background: #EADCDA;
+    }
+
+    .secure-footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.82rem;
+      color: #A38E8E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .secure-footer i {
+      color: #4CAF50;
+    }
+
+    /* ----- RESPONSIVE LAYOUT MATRIX ----- */
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .full-width { grid-column: span 1; }
+      .urgency-grid { grid-template-columns: repeat(2, 1fr); }
+      .app-card { padding: 32px 24px; }
+      .form-header h1 { font-size: 1.75rem; }
+      .action-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-card" id="mainContainer">
+    
+    <!-- View 1: The Registration Form Interface -->
+    <div id="formView">
+      <div class="top-bar">
+        <a href="index.html" class="back-nav"><i class="fa-solid fa-chevron-left"></i> Return to Home</a>
+        <div class="live-badge">Matching Engine Active</div>
+      </div>
+
+      <div class="form-header">
+        <div class="icon-frame">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <div>
+          <h1>Patient <span>Registration Portal</span></h1>
+          <p>Broadcast a verified emergency donor request across the BloodLine matching infrastructure.</p>
+        </div>
+      </div>
+
+      <form id="receiverForm" onsubmit="showSuccessPage(event)">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="fullName"><i class="fa-solid fa-id-card"></i> Patient Full Name <span class="required-dot">*</span></label>
+            <input type="text" id="fullName" placeholder="Enter patient's legal name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="age"><i class="fa-solid fa-cake-candles"></i> Age <span class="required-dot">*</span></label>
+            <input type="number" id="age" placeholder="e.g., 34" min="0" max="120" required />
+          </div>
+
+          <div class="form-group">
+            <label for="gender"><i class="fa-solid fa-venus-mars"></i> Gender <span class="required-dot">*</span></label>
+            <select id="gender" required>
+              <option value="" disabled selected>Select gender profile</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other / Transgender</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="bloodGroup"><i class="fa-solid fa-droplet"></i> Target Blood Type <span class="required-dot">*</span></label>
+            <select id="bloodGroup" required>
+              <option value="" disabled selected>Select required type</option>
+              <option value="A+">A+</option><option value="A-">A-</option>
+              <option value="B+">B+</option><option value="B-">B-</option>
+              <option value="AB+">AB+</option><option value="AB-">AB-</option>
+              <option value="O+">O+</option><option value="O-">O-</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="units"><i class="fa-solid fa-boxes-stacked"></i> Volume Needed (Units) <span class="required-dot">*</span></label>
+            <input type="number" id="units" placeholder="Total whole blood bags" min="1" max="15" required />
+          </div>
+
+          <div class="form-group">
+            <label for="hospital"><i class="fa-solid fa-building-medical"></i> Medical Facility / Hospital <span class="required-dot">*</span></label>
+            <input type="text" id="hospital" placeholder="e.g., City General Hospital" required />
+          </div>
+
+          <div class="form-group">
+            <label for="doctor"><i class="fa-solid fa-user-doctor"></i> Attending Physician</label>
+            <input type="text" id="doctor" placeholder="Dr. Practitioner Name" />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="contact"><i class="fa-solid fa-phone-volume"></i> Primary Emergency Contact Line <span class="required-dot">*</span></label>
+            <input type="tel" id="contact" placeholder="Phone number for point of contact verification" required />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="address"><i class="fa-solid fa-map-location-dot"></i> Delivery Ward / Facility Address <span class="required-dot">*</span></label>
+            <input type="text" id="address" placeholder="Room/Ward number, building, floor, street details" required />
+          </div>
+
+          <div class="form-group">
+            <label for="city"><i class="fa-solid fa-city"></i> City <span class="required-dot">*</span></label>
+            <input type="text" id="city" placeholder="City location" required />
+          </div>
+
+          <div class="form-group">
+            <label for="state"><i class="fa-solid fa-map"></i> State / Province <span class="required-dot">*</span></label>
+            <input type="text" id="state" placeholder="State/Region" required />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="dateRequired"><i class="fa-solid fa-clock"></i> Critical Target Fulfillment Date <span class="required-dot">*</span></label>
+            <input type="date" id="dateRequired" required />
+          </div>
+
+          <div class="form-group full-width">
+            <label><i class="fa-solid fa-triangle-exclamation"></i> Triage & Urgency Level <span class="required-dot">*</span></label>
+            <div class="urgency-grid">
+              <label class="urgency-card">
+                <input type="radio" name="urgency" value="Low" checked />
+                <span class="card-title">Low</span>
+                <span class="card-desc">Elective Stock</span>
+              </label>
+              <label class="urgency-card">
+                <input type="radio" name="urgency" value="Medium" />
+                <span class="card-title">Medium</span>
+                <span class="card-desc">Scheduled Surgery</span>
+              </label>
+              <label class="urgency-card">
+                <input type="radio" name="urgency" value="High" />
+                <span class="card-title">High</span>
+                <span class="card-desc">Within 24 Hours</span>
+              </label>
+              <label class="urgency-card">
+                <input type="radio" name="urgency" value="Critical" />
+                <span class="card-title">🚨 Critical</span>
+                <span class="card-desc">Immediate / Life Support</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="condition"><i class="fa-solid fa-stethoscope"></i> Primary Medical Case Diagnosis</label>
+            <input type="text" id="condition" placeholder="e.g., Trauma recovery, surgery triage" />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="notes"><i class="fa-solid fa-comment-medical"></i> Special Logistics Directives</label>
+            <textarea id="notes" placeholder="Specify special instructions..."></textarea>
+          </div>
+        </div>
+
+        <div class="alert-banner">
+          <i class="fa-solid fa-circle-info"></i>
+          <p><strong>System Note:</strong> Marking a request as <em>Critical</em> will leverage high-priority push channels, SMS alerts, and geofence pings to active local donors.</p>
+        </div>
+
+        <div class="action-row">
+          <button type="submit" class="btn btn-submit">
+            <i class="fa-solid fa-share-nodes"></i> Broadcast Matching Request
+          </button>
+          <button type="reset" class="btn btn-reset">
+            <i class="fa-solid fa-rotate-left"></i> Reset Form
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- View 2: The Success Confirmation Layout (Hidden by default) -->
+    <div id="successView" style="display: none;">
+      <div class="success-icon-wrap">
+        <i class="fa-solid fa-check"></i>
+      </div>
+
+      <h1>Successfully <span>Registered!</span></h1>
+      <p class="success-subtitle">Your emergency application is locked into the registry. We are processing your request parameters and will meet your requirements shortly.</p>
+
+      <div class="status-box">
+        <div class="status-title">
+          <span>Request Lifecycle Tracker</span>
+          <span class="live-tracker-msg"><i class="fa-solid fa-circle"></i> Live Match Engine Tracking</span>
+        </div>
+        
+        <div class="timeline-steps">
+          <div class="t-step done">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Data Layer Verification Complete</span>
+          </div>
+          <div class="t-step active">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span>Querying Local Donor Antigen Compatibility Matrices...</span>
+          </div>
+          <div class="t-step pending">
+            <i class="fa-regular fa-circle"></i>
+            <span>Dispatching High-Priority SMS & Push Broadcasts</span>
+          </div>
+          <div class="t-step pending">
+            <i class="fa-regular fa-circle"></i>
+            <span>Awaiting Donor Callback & Hospital Delivery Coordination</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="success-actions">
+        <a href="#" class="btn btn-dashboard">
+          <i class="fa-solid fa-chart-pie"></i> View Live Match Dashboard
+        </a>
+        <a href="index.html" class="btn btn-home">
+          <i class="fa-solid fa-house"></i> Return to Main Homepage
+        </a>
+      </div>
+    </div>
+
+    <div class="secure-footer">
+      <i class="fa-solid fa-shield-halved"></i> HIPAA Compliant Secure Endpoint • Relayed Data is Fully Encrypted
+    </div>
+
+  </div>
+
+  <!-- Client Side UI Control Logic Scripting -->
+  <script>
+    // 1. Set default date limits on load
+    (function() {
+      const dateInput = document.getElementById('dateRequired');
+      if (dateInput) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        dateInput.value = `${yyyy}-${mm}-${dd}`;
+        dateInput.min = `${yyyy}-${mm}-${dd}`;
+      }
+    })();
+
+    // 2. Transition from Form View to Success View upon successful submit
+    function showSuccessPage(event) {
+      event.preventDefault(); // Prevents page reload
+      
+      // Hide form elements, show success panels
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('successView').style.display = 'block';
+      
+      // Morph the core layout frame width to focus tightly on content
+      document.getElementById('mainContainer').classList.add('success-mode');
+      
+      // Scroll smoothly to top of window container
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function showSuccessPage(event) {
+  event.preventDefault(); // Prevents page reload
+  
+  // 1. Package up all form inputs exactly as required by the Mongoose model schema
+  const patientPayload = {
+    name: document.getElementById('fullName').value,
+    age: parseInt(document.getElementById('age').value),
+    gender: document.getElementById('gender').value,
+    bloodGroup: document.getElementById('bloodGroup').value,
+    unitsRequired: parseInt(document.getElementById('units').value),
+    hospitalName: document.getElementById('hospital').value,
+    doctorName: document.getElementById('doctor').value,
+    contactNumber: document.getElementById('contact').value,
+    address: document.getElementById('address').value,
+    city: document.getElementById('city').value,
+    state: document.getElementById('state').value,
+    dateRequired: document.getElementById('dateRequired').value,
+    urgencyLevel: document.querySelector('input[name="urgency"]:checked').value,
+    condition: document.getElementById('condition').value,
+    notes: document.getElementById('notes').value
+  };
+
+  // 2. Call your central API utility to save data to the server
+  const result = await BloodLineAPI.registerPatient(patientPayload);
+
+  if (result.success) {
+    // 3. Update the tracking box UI message with the database ID string
+    document.getElementById('receiptID').innerText = result.patientId.substring(0, 8).toUpperCase();
+    
+    // Switch panels smoothly
+    document.getElementById('formView').style.display = 'none';
+    document.getElementById('successView').style.display = 'block';
+    document.getElementById('mainContainer').classList.add('success-mode');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    alert("Submission breakdown: " + result.error);
+  }
+}
+  </script>
+
+</body>
+</html>

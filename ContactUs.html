@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodLine — Contact Us</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --red:        #e02020;
+        --red-deep:   #b01515;
+        --red-light:  #fff1f1;
+        --red-mid:    #ffd6d6;
+        --bg:         #fdf6f6;
+        --surface:    #ffffff;
+        --surface2:   #fff8f8;
+        --border:     #f0d4d4;
+        --text:       #1a0a0a;
+        --text-sub:   #7a4a4a;
+        --text-muted: #b08080;
+        --shadow:     0 4px 28px rgba(180,60,60,0.10);
+        --shadow-lg:  0 12px 48px rgba(180,60,60,0.16);
+        --radius:     20px;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); padding-top: 110px; }
+
+      header {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+        background: rgba(253,246,246,0.92); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+        border-bottom: 1.5px solid var(--border); padding: 0 5vw; height: 75px;
+        display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 20px rgba(180,60,60,0.07);
+      }
+      .logo-area { display: flex; align-items: center; gap: 11px; }
+      .brand-name { font-family: 'Fraunces', serif; font-weight: 900; font-size: 24px; color: var(--red); }
+      header div:last-child { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+      nav { position: fixed; top: 75px; left: 0; right: 0; z-index: 190; background: var(--red-light); border-bottom: 1.5px solid var(--red-mid); padding: 8px 5vw; }
+      nav a { text-decoration: none; color: var(--red); font-weight: 700; font-size: 14px; }
+
+      .container {
+        max-width: 1000px; margin: 40px auto 80px; width: 90%;
+        background: var(--surface); border: 1.5px solid var(--border);
+        border-radius: var(--radius); padding: 50px 5vw; box-shadow: var(--shadow-lg);
+        display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+      }
+
+      h2 { grid-column: 1 / -1; font-family: 'Fraunces', serif; font-size: 36px; font-weight: 900; text-align: center; margin-bottom: 10px; }
+      
+      .contact-info { display: flex; flex-direction: column; gap: 16px; }
+      .info-card { background: var(--surface2); border: 1.5px solid var(--border); padding: 20px; border-radius: 12px; }
+      .info-card h4 { color: var(--red); margin-bottom: 6px; font-size: 16px; font-weight: 700; }
+      .info-card p { font-size: 15px; color: var(--text-sub); font-weight: 500; }
+
+      form { background: var(--surface2); border: 1.5px solid var(--border); padding: 30px; border-radius: 16px; display: flex; flex-direction: column; gap: 16px; }
+      form h1 { font-family: 'Fraunces', serif; font-size: 24px; color: var(--text); }
+      
+      input, textarea {
+        width: 100%; padding: 12px 16px; font-family: inherit; font-size: 14px;
+        background: var(--surface); border: 1.5px solid var(--border); border-radius: 8px;
+        color: var(--text); transition: border-color 0.2s;
+      }
+      input:focus, textarea:focus { outline: none; border-color: var(--red-mid); }
+
+      .submit-btn {
+        background: var(--red); color: white; font-weight: 700; font-size: 15px;
+        padding: 14px; border: none; border-radius: 8px; cursor: pointer;
+        box-shadow: 0 4px 14px rgba(224,32,32,0.25); transition: all 0.2s;
+      }
+      .submit-btn:hover { background: var(--red-deep); transform: translateY(-1px); }
+
+      .map-section { grid-column: 1 / -1; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--border); }
+      iframe { width: 100%; height: 350px; border: 0; display: block; }
+
+      @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span style="font-size:24px;">❤️</span>
+            <span class="brand-name">BLOOD-LINE</span>
+        </div>
+        <div>The Real-Time Blood Network</div>
+    </header>
+
+    <nav><a href="HomePage.html">← Back to Home</a></nav>
+
+    <div class="container">
+        <h2>Get In Touch</h2>
+
+        <div class="contact-info">
+            <div class="info-card">
+                <h4>📞 Emergency Hotline</h4>
+                <p>+91 1234 567 890 (Toll-Free)</p>
+            </div>
+            <div class="info-card">
+                <h4>✉️ Email Address</h4>
+                <p>support@bloodline.org</p>
+            </div>
+            <div class="info-card">
+                <h4>📍 Headquarters</h4>
+                <p>ABC 123 Life Street XXXYYYZZZ, Pune, Maharashtra, 411044</p>
+            </div>
+        </div>
+
+        <form onsubmit="event.preventDefault();">
+            <h1>For Help</h1>
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Email" required>
+            <input type="tel" placeholder="Contact no." required>
+            <textarea rows="3" placeholder="Message"></textarea>
+            <button type="submit" class="submit-btn">Send Message</button>
+        </form>
+
+        <div class="map-section">
+            <iframe src="https://www.google.com/maps/embed?..." allowfullscreen></iframe>
+        </div>
+    </div>
+</body>
+</html>

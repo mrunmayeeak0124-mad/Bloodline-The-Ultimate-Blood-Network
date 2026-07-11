@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodline | Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        #page1 { font-family: 'Inter', sans-serif; min-height: 100vh; background-color: #000; position: relative; display: flex; flex-direction: column; }
+        .bg-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu638kRilLy5ZzubT0rfCoev64Ww-ceSfXyA&s'); background-size: cover; background-position: center; z-index: 1; }
+        .content-wrap-p1 { position: relative; z-index: 10; display: flex; flex-direction: column; min-height: 100vh; }
+        .navbar-p1 { padding: 30px 50px; display: flex; align-items: center; }
+        .logo-icon-p1 { width: 45px; height: 45px; background-color: #d63031; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 24px; }
+        .brand-name-p1 { color: white; font-size: 26px; font-weight: 700; margin-left: 15px; letter-spacing: 2px; text-transform: uppercase; }
+        .glass-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); padding: 60px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.2); text-align: center; max-width: 700px; margin: auto; }
+
+        .btn-login {
+            background: #d63031; color: white; padding: 16px 50px; border-radius: 50px;
+            border: none; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 18px;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(214, 48, 49, 0.2);
+            text-decoration: none; display: inline-block;
+        }
+        .btn-login:hover { background: #b30000; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+    <div id="page1">
+        <div class="bg-image"></div>
+        <div class="content-wrap-p1">
+            <nav class="navbar-p1"><div class="logo-icon-p1">B</div><span class="brand-name-p1">BLOODLINE</span></nav>
+            <div class="glass-card">
+                <h2 style="color:rgb(120, 13, 13); font-size:40px; margin-bottom:20px;">BLOOD BANK MANAGEMENT SYSTEM</h2>
+                <p style="color:rgb(255, 255, 255); margin-bottom:40px;">A real-time connection network bridging the gap between donors, hospitals, and lives.</p>
+                <a href="trial1.html" class="btn-login">Login to System</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

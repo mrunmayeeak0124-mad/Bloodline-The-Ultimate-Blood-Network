@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BloodLine | The Donor (Main-WebPage)</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Background */
+        .bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)),
+            url('https://images.unsplash.com/photo-1615461066841-6116e61058f4');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* NAVBAR */
+        nav {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: #ffccd5;
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        /* MARQUEE */
+        marquee {
+            color: #ffccd5;
+            padding: 8px;
+            font-style: italic;
+        }
+
+        /* Hero */
+        .hero {
+            height: 75vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glass {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            padding: 60px;
+            border-radius: 25px;
+            text-align: center;
+            color: white;
+            max-width: 700px;
+        }
+
+        .glass h1 {
+            font-size: 46px;
+            margin-bottom: 15px;
+        }
+
+        .glass p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* Button */
+        .btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: #ff4d6d;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #c9184a;
+            transform: scale(1.05);
+        }
+
+        /* Footer Quote */
+        .quote {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: #ffccd5;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<header>
+    <div class="logo">❤️ BLOODLINE</div>
+    <div> The Donor's Network</div>
+</header>
+
+<!-- NAV LINKS -->
+<nav>
+    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10638672/">Awareness</a>
+    <a href="https://naco.mohfw.gov.in/sites/default/files/Letter%20reg.%20%20guidelines%20for%20blood%20donor%20selection%20&%20referral%20-2017.pdf">Guidelines</a>
+    <a href="https://www.ndtv.com/topic/blood-donation">Reports/News</a>
+    <a href="https://www.redcrossblood.org/donate-blood/blood-donation-process/what-happens-to-donated-blood.html">Journey</a>
+</nav>
+
+<!-- MARQUEE QUOTE -->
+<marquee>
+    "The gift of blood is the gift of life — one donation can save up to three lives."
+</marquee>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="glass">
+        <h1>Empowering Blood Donors :- Saving Lives</h1>
+
+        <p>
+            Step into a smarter donor ecosystem where every action you take is guided,
+            valued, and transformed into real impact of saving someone's Life...
+        </p>
+
+        <button class="btn" onclick="enter()">Enter Donor's Section</button>
+    </div>
+</section>
+
+<script>
+function enter() {
+    window.location.href = "sectionDonar.html";
+}
+</script>
+
+<footer>
+<div class="quote">
+    "Donating blood is not just an act, it's a commitment to humanity."
+</div>
+</footer>
+
+</body>
+</html>

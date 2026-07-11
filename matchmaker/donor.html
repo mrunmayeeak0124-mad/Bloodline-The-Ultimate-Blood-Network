@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BloodLine — Donor Registration & Screening</title>
+
+  <!-- Google Fonts & Iconography -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    /* ----- CORE DESIGN SYSTEM ----- */
+    :root {
+      --primary: #C62828;
+      --primary-dark: #8E1B1B;
+      --accent: #FF5252;
+      --success: #2E7D32;
+      --warning: #EF6C00;
+      --bg-canvas: #FFF6F6;
+      --surface: #FFFFFF;
+      --text-main: #2A1B1B;
+      --text-muted: #6E5656;
+      --border: #F0D7D7;
+      --focus-ring: rgba(198, 40, 40, 0.12);
+      --radius-lg: 32px;
+      --radius-md: 16px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-canvas);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-card {
+      max-width: 850px;
+      width: 100%;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 56px;
+      box-shadow: 0 24px 70px rgba(142, 27, 27, 0.07);
+      border: 1px solid var(--border);
+      position: relative;
+      transition: max-width 0.4s ease;
+    }
+
+    .app-card.narrow-mode { max-width: 650px; }
+
+    /* ----- HEADER STYLING ----- */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+    }
+
+    .back-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+
+    .back-nav:hover { color: var(--primary); transform: translateX(-4px); }
+
+    .step-badge {
+      background: rgba(198, 40, 40, 0.08);
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .form-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #FDF0F0;
+      padding-bottom: 28px;
+    }
+
+    .form-header .icon-frame {
+      background: linear-gradient(135deg, #FFF0F0 0%, #FFE2E2 100%);
+      color: var(--primary);
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .form-header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #150B0B;
+      line-height: 1.2;
+    }
+
+    .form-header h1 span { color: var(--primary); }
+    .form-header p { font-size: 1rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ----- GRID LAYOUT & FIELDS ----- */
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 30px; }
+    .full-width { grid-column: span 2; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    label i { color: var(--primary); font-size: 0.95rem; }
+    label .required-dot { color: var(--accent); margin-left: 2px; }
+
+    input, select, textarea {
+      padding: 14px 18px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.98rem;
+      background: #FFFBFB;
+      color: var(--text-main);
+      transition: var(--transition);
+      outline: none;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 5px var(--focus-ring);
+      background: var(--surface);
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23C62828' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 18px;
+      padding-right: 45px;
+    }
+
+    /* ----- ELIGIBILITY PANEL STYLES ----- */
+    .screening-list { display: flex; flex-direction: column; gap: 20px; }
+    
+    .question-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 24px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      background: #FFFBFB;
+      gap: 20px;
+    }
+
+    .question-text { font-weight: 500; font-size: 0.98rem; color: var(--text-main); }
+
+    .toggle-group { display: flex; gap: 8px; }
+    
+    .toggle-btn {
+      padding: 10px 24px;
+      border-radius: 50px;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+
+    .toggle-btn.yes:hover, .toggle-btn.yes.active { background: #E8F5E9; border-color: var(--success); color: var(--success); }
+    .toggle-btn.no:hover, .toggle-btn.no.active { background: #FFEBEE; border-color: var(--primary); color: var(--primary); }
+
+    /* ----- OUTCOME VIEW PANEL ----- */
+    .outcome-view { text-align: center; padding: 20px 0; }
+    
+    .status-icon {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      margin-bottom: 28px;
+    }
+
+    .status-icon.eligible { background: #E8F5E9; color: var(--success); }
+    .status-icon.ineligible { background: #FFEBEE; color: var(--primary); }
+
+    .outcome-view p { color: var(--text-muted); margin: 12px auto 36px; max-width: 500px; line-height: 1.6; }
+
+    /* ----- CONTROLS / BUTTONS ----- */
+    .action-row { display: flex; gap: 16px; margin-top: 36px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px 32px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 1rem;
+      border: 2px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .btn-submit { background: var(--primary); color: var(--surface); flex: 2; box-shadow: 0 8px 24px rgba(198, 40, 40, 0.2); }
+    .btn-submit:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-secondary { background: #F5EAE9; color: #523B3B; flex: 1; }
+    .btn-secondary:hover { background: #EADCDA; }
+
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .full-width { grid-column: span 1; }
+      .question-item { flex-direction: column; align-items: flex-start; }
+      .toggle-group { width: 100%; }
+      .toggle-btn { flex: 1; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-card" id="flowContainer">
+    
+    <!-- PHASE 1: REGISTRATION FORM -->
+    <div id="registrationPhase">
+      <div class="top-bar">
+        <a href="index.html" class="back-nav"><i class="fa-solid fa-chevron-left"></i> Home</a>
+        <div class="step-badge" id="stepIndicator">Step 1 of 2: Profile</div>
+      </div>
+
+      <div class="form-header">
+        <div class="icon-frame"><i class="fa-solid fa-id-card-clip"></i></div>
+        <div>
+          <h1>Donor <span>Registration</span></h1>
+          <p>Register your core vital metrics securely to establish your active donor record.</p>
+        </div>
+      </div>
+
+      <form id="donorRegForm" onsubmit="goToScreening(event)">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="dName"><i class="fa-solid fa-user"></i> Legal Full Name <span class="required-dot">*</span></label>
+            <input type="text" id="dName" placeholder="Enter full name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="dAge"><i class="fa-solid fa-cake-candles"></i> Age <span class="required-dot">*</span></label>
+            <input type="number" id="dAge" placeholder="Your age" min="1" max="100" required />
+          </div>
+
+          <div class="form-group">
+            <label for="dGender"><i class="fa-solid fa-venus-mars"></i> Gender <span class="required-dot">*</span></label>
+            <select id="dGender" required>
+              <option value="" disabled selected>Select profile</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="dBlood"><i class="fa-solid fa-droplet"></i> Blood Group <span class="required-dot">*</span></label>
+            <select id="dBlood" required>
+              <option value="" disabled selected>Select blood type</option>
+              <option value="A+">A+</option><option value="A-">A-</option>
+              <option value="B+">B+</option><option value="B-">B-</option>
+              <option value="AB+">AB+</option><option value="AB-">AB-</option>
+              <option value="O+">O+</option><option value="O-">O-</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="dWeight"><i class="fa-solid fa-weight-scale"></i> Current Weight (kg) <span class="required-dot">*</span></label>
+            <input type="number" id="dWeight" placeholder="e.g., 68" required />
+          </div>
+
+          <div class="form-group">
+            <label for="dMobile"><i class="fa-solid fa-phone"></i> Mobile Line <span class="required-dot">*</span></label>
+            <input type="tel" id="dMobile" placeholder="Primary contact number" required />
+          </div>
+
+          <div class="form-group">
+            <label for="dEmail"><i class="fa-solid fa-envelope"></i> Email Address <span class="required-dot">*</span></label>
+            <input type="email" id="dEmail" placeholder="name@domain.com" required />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="dAddress"><i class="fa-solid fa-location-dot"></i> Street Address <span class="required-dot">*</span></label>
+            <input type="text" id="dAddress" placeholder="Apartment, unit, street address details" required />
+          </div>
+
+          <div class="form-group">
+            <label for="dCity"><i class="fa-solid fa-city"></i> City <span class="required-dot">*</span></label>
+            <input type="text" id="dCity" placeholder="City location" required />
+          </div>
+
+          <div class="form-group">
+            <label for="dState"><i class="fa-solid fa-map"></i> State <span class="required-dot">*</span></label>
+            <input type="text" id="dState" placeholder="State/Province" required />
+          </div>
+
+          <div class="form-group">
+            <label for="dLastDate"><i class="fa-solid fa-calendar-day"></i> Last Donation Date</label>
+            <input type="date" id="dLastDate" />
+          </div>
+
+          <div class="form-group">
+            <label for="dAvailability"><i class="fa-solid fa-clock"></i> Standing Availability <span class="required-dot">*</span></label>
+            <select id="dAvailability" required>
+              <option value="Immediate">Available Today (Immediate)</option>
+              <option value="Weekends">Weekends Only</option>
+              <option value="Evenings">Evenings Only</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="dEmergency"><i class="fa-solid fa-phone-volume"></i> Emergency Alternate Contact info <span class="required-dot">*</span></label>
+            <input type="text" id="dEmergency" placeholder="Name and phone of alternate contact" required />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="dHistory"><i class="fa-solid fa-file-medical"></i> General Medical Record Notes</label>
+            <textarea id="dHistory" placeholder="List any long-term medical histories or continuous observations..."></textarea>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button type="submit" class="btn btn-submit">Proceed to Eligibility Verification <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </form>
+    </div>
+
+    <!-- PHASE 2: ELIGIBILITY CHECK -->
+    <div id="screeningPhase" style="display: none;">
+      <div class="top-bar">
+        <button onclick="backToReg()" class="back-nav" style="background:none; border:none; cursor:pointer;"><i class="fa-solid fa-chevron-left"></i> Adjust Profile</button>
+        <div class="step-badge">Step 2 of 2: Screening</div>
+      </div>
+
+      <div class="form-header">
+        <div class="icon-frame"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div>
+          <h1>Vitals & <span>Eligibility Check</span></h1>
+          <p>Please complete this screening module accurately to confirm matching compliance parameters.</p>
+        </div>
+      </div>
+
+      <div class="screening-list">
+        <!-- Question Block Matrix -->
+        <div class="question-item" data-rule="invert">
+          <span class="question-text">Do you currently have a fever or experienced severe chills within the last 7 days?</span>
+          <div class="toggle-group">
+            <button class="toggle-btn yes" onclick="setAnswer(this, true)">Yes</button>
+            <button class="toggle-btn no active" onclick="setAnswer(this, false)">No</button>
+          </div>
+        </div>
+
+        <div class="question-item" data-rule="invert">
+          <span class="question-text">Have you received a tattoo, piercing, or permanent cosmetics within the last 6 months?</span>
+          <div class="toggle-group">
+            <button class="toggle-btn yes" onclick="setAnswer(this, true)">Yes</button>
+            <button class="toggle-btn no active" onclick="setAnswer(this, false)">No</button>
+          </div>
+        </div>
+
+        <div class="question-item" data-rule="invert">
+          <span class="question-text">Are you currently pregnant or nursing?</span>
+          <div class="toggle-group">
+            <button class="toggle-btn yes" onclick="setAnswer(this, true)">Yes</button>
+            <button class="toggle-btn no active" onclick="setAnswer(this, false)">No</button>
+          </div>
+        </div>
+
+        <div class="question-item" data-rule="invert">
+          <span class="question-text">Have you undergone any major surgical procedures within the recent calendar quarter?</span>
+          <div class="toggle-group">
+            <button class="toggle-btn yes" onclick="setAnswer(this, true)">Yes</button>
+            <button class="toggle-btn no active" onclick="setAnswer(this, false)">No</button>
+          </div>
+        </div>
+
+        <div class="question-item" data-rule="invert">
+          <span class="question-text">Are you currently undergoing insulin management for unmonitored Diabetes?</span>
+          <div class="toggle-group">
+            <button class="toggle-btn yes" onclick="setAnswer(this, true)">Yes</button>
+            <button class="toggle-btn no active" onclick="setAnswer(this, false)">No</button>
+          </div>
+        </div>
+
+        <div class="question-item" data-rule="invert">
+          <span class="question-text">Do you suffer from chronically uncontrolled high or low blood pressure?</span>
+          <div class="toggle-group">
+            <button class="toggle-btn yes" onclick="setAnswer(this, true)">Yes</button>
+            <button class="toggle-btn no active" onclick="setAnswer(this, false)">No</button>
+          </div>
+        </div>
+
+        <div class="question-item" data-rule="invert">
+          <span class="question-text">Have you consumed alcohol within the last 24 hours?</span>
+          <div class="toggle-group">
+            <button class="toggle-btn yes" onclick="setAnswer(this, true)">Yes</button>
+            <button class="toggle-btn no active" onclick="setAnswer(this, false)">No</button>
+          </div>
+        </div>
+
+        <div class="question-item" data-rule="direct">
+          <span class="question-text">Is your regular Hemoglobin count known to be within normal healthy limits?</span>
+          <div class="toggle-group">
+            <button class="toggle-btn yes active" onclick="setAnswer(this, true)">Yes</button>
+            <button class="toggle-btn no" onclick="setAnswer(this, false)">No</button>
+          </div>
+        </div>
+
+        <div class="question-item" data-rule="invert">
+          <span class="question-text">Are you recovering from COVID-19 or any acute respiratory infectious disease?</span>
+          <div class="toggle-group">
+            <button class="toggle-btn yes" onclick="setAnswer(this, true)">Yes</button>
+            <button class="toggle-btn no active" onclick="setAnswer(this, false)">No</button>
+          </div>
+        </div>
+
+        <div class="question-item" data-rule="invert">
+          <span class="question-text">Are you currently prescribed any regular immunosuppressants or targeted blood-thinning medications?</span>
+          <div class="toggle-group">
+            <button class="toggle-btn yes" onclick="setAnswer(this, true)">Yes</button>
+            <button class="toggle-btn no active" onclick="setAnswer(this, false)">No</button>
+          </div>
+        </div>
+
+        <div class="question-item" data-rule="invert">
+          <span class="question-text">Have you ever tested positive for chronic blood-borne infectious diseases?</span>
+          <div class="toggle-group">
+            <button class="toggle-btn yes" onclick="setAnswer(this, true)">Yes</button>
+            <button class="toggle-btn no active" onclick="setAnswer(this, false)">No</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button onclick="evaluateEligibility()" class="btn btn-submit">Verify Eligibility Status <i class="fa-solid fa-shield-heart"></i></button>
+      </div>
+    </div>
+
+    <!-- PHASE 3: OUTCOME VIEWS -->
+    <div id="outcomePhase" style="display: none;">
+      <!-- Dynamic Inject -->
+    </div>
+
+  </div>
+  <!-- At the bottom of donor.html -->
+<script src="assets/js/api.js"></script>
+<script>
+  // This is a DIFFERENT function specifically written for the donor form fields!
+  async function submitDonorRegistration(donorPayload) {
+    const result = await BloodLineAPI.registerDonor(donorPayload);
+    if (result.success) {
+      // Show donor confirmation success screen panel elements...
+    } else {
+      alert("Registration failed: " + result.error);
+    }
+  }
+</script>
+  <script>
+    let screeningAnswers = [];
+
+    function goToScreening(e) {
+      e.preventDefault();
+      
+      // Enforce age/weight bounds checked from profile layer directly
+      const age = parseInt(document.getElementById('dAge').value);
+      const weight = parseInt(document.getElementById('dWeight').value);
+
+      if(age < 18 || age > 65 || weight < 50) {
+        showFinalView(false, "Profile parameter mismatch. Donors must strictly be aged 18-65 and weigh above 50kg.");
+        return;
+      }
+
+      document.getElementById('registrationPhase').style.display = 'none';
+      document.getElementById('screeningPhase').style.display = 'block';
+      document.getElementById('flowContainer').classList.add('narrow-mode');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToReg() {
+      document.getElementById('screeningPhase').style.display = 'none';
+      document.getElementById('registrationPhase').style.display = 'block';
+      document.getElementById('flowContainer').classList.remove('narrow-mode');
+    }
+
+    function setAnswer(button, val) {
+      const group = button.parentElement;
+      Array.from(group.children).forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+    }
+
+    async function evaluateEligibility() {
+  let isEligible = true;
+  const questions = document.querySelectorAll('.question-item');
+
+  questions.forEach(q => {
+    const type = q.getAttribute('data-rule');
+    const hasYesActive = q.querySelector('.toggle-btn.yes').classList.contains('active');
+    if (type === 'invert' && hasYesActive) isEligible = false;
+    if (type === 'direct' && !hasYesActive) isEligible = false;
+  });
+
+  // 🟢 NEW: If they pass all vitals, automatically write their record to MongoDB cloud architecture!
+  if (isEligible) {
+    const donorPayload = {
+      name: document.getElementById('dName').value,
+      age: parseInt(document.getElementById('dAge').value),
+      gender: document.getElementById('dGender').value,
+      bloodGroup: document.getElementById('dBlood').value,
+      weight: parseInt(document.getElementById('dWeight').value),
+      contactNumber: document.getElementById('dMobile').value,
+      email: document.getElementById('dEmail').value,
+      address: `${document.getElementById('dAddress').value}, ${document.getElementById('dCity').value}, ${document.getElementById('dState').value}`,
+      availability: document.getElementById('dAvailability').value,
+      emergencyContact: document.getElementById('dEmergency').value,
+      medicalNotes: document.getElementById('dHistory').value,
+      isEligible: true
+    };
+    
+    const result = await BloodLineAPI.registerDonor(donorPayload);
+    if (!result.success) {
+      alert("Database Sync Failed: " + result.error);
+      return; // Stop execution if server throws an error
+    }
+  }
+
+  showFinalView(isEligible);
+}
+
+    function showFinalView(eligible, CustomMsg = "") {
+      document.getElementById('registrationPhase').style.display = 'none';
+      document.getElementById('screeningPhase').style.display = 'none';
+      
+      const container = document.getElementById('outcomePhase');
+      container.style.display = 'block';
+      document.getElementById('flowContainer').classList.add('narrow-mode');
+
+      if(eligible) {
+        container.innerHTML = `
+          <div class="outcome-view">
+            <div class="status-icon eligible"><i class="fa-solid fa-circle-check"></i></div>
+            <h1>Verification <span>Successful!</span></h1>
+            <p>You meet all dynamic safety criteria. Your profile is active inside the BloodLine matchmaking framework.</p>
+            <div class="action-row" style="justify-content: center;">
+              <a href="index.html" class="btn btn-submit">Return to Dashboard</a>
+            </div>
+          </div>`;
+      } else {
+        container.innerHTML = `
+          <div class="outcome-view">
+            <div class="status-icon ineligible"><i class="fa-solid fa-circle-xmark"></i></div>
+            <h1>Registration <span>Deferred</span></h1>
+            <p>${CustomMsg ? CustomMsg : "Regrettably, your active vital indicators or medical records do not match regulatory requirements for donor allocation at this moment."}</p>
+            <div class="action-row" style="justify-content: center;">
+              <a href="index.html" class="btn btn-secondary">Exit Portal</a>
+            </div>
+          </div>`;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

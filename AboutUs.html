@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodLine — About Our Network</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --red:        #e02020;
+        --red-deep:   #b01515;
+        --red-light:  #fff1f1;
+        --red-mid:    #ffd6d6;
+        --bg:         #fdf6f6;
+        --surface:    #ffffff;
+        --surface2:   #fff8f8;
+        --border:     #f0d4d4;
+        --text:       #1a0a0a;
+        --text-sub:   #7a4a4a;
+        --text-muted: #b08080;
+        --green:      #1d9e5a;
+        --green-bg:   #edfaf3;
+        --green-mid:  #b5e8cf;
+        --shadow:     0 4px 28px rgba(180,60,60,0.10);
+        --shadow-lg:  0 12px 48px rgba(180,60,60,0.16);
+        --radius:     20px;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+        padding-top: 110px;
+      }
+
+      /* ── NAV ── */
+      nav.nav-header {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+        background: rgba(253,246,246,0.92);
+        backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+        border-bottom: 1.5px solid var(--border);
+        padding: 0 5vw; height: 75px;
+        display: flex; align-items: center; justify-content: space-between;
+        box-shadow: 0 2px 20px rgba(180,60,60,0.07);
+      }
+
+      .logo {
+        display: flex; align-items: center; gap: 11px;
+        font-family: 'Fraunces', serif; font-weight: 900; font-size: 24px;
+        letter-spacing: -0.02em; color: var(--red); text-decoration: none;
+      }
+
+      .logo-drop {
+        width: 38px; height: 38px; background: var(--red);
+        border-radius: 50% 50% 50% 10%; transform: rotate(-30deg);
+        position: relative;
+      }
+
+      .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; }
+      .nav-links a {
+        font-size: 14px; font-weight: 600; color: var(--text-sub);
+        text-decoration: none; padding: 8px 14px; border-radius: 10px; transition: all 0.2s;
+      }
+      .nav-links a:hover { background: var(--red-light); color: var(--red); }
+      .nav-hamburger { display: none; cursor: pointer; font-size: 22px; color: var(--text-sub); }
+
+      /* ── CONTAINER LAYOUT ── */
+      .container {
+        max-width: 1000px; margin: 40px auto 80px; width: 90%;
+        background: var(--surface); border: 1.5px solid var(--border);
+        border-radius: var(--radius); padding: 60px 5vw; box-shadow: var(--shadow-lg);
+      }
+
+      h1 {
+        font-family: 'Fraunces', serif; font-weight: 900; font-size: clamp(32px, 4vw, 48px);
+        letter-spacing: -0.02em; color: var(--text); text-align: center; margin-bottom: 30px;
+        background: linear-gradient(135deg, var(--text), var(--red-deep));
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      }
+
+      h3 {
+        font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900;
+        color: var(--text); margin-top: 40px; margin-bottom: 14px;
+        border-left: 4px solid var(--red); padding-left: 14px;
+      }
+
+      p { font-size: 16px; font-weight: 500; color: var(--text-sub); line-height: 1.75; text-align: justify; }
+      p b { color: var(--text); font-weight: 700; }
+
+      /* ── MISSION BOX CARDS ── */
+      .mission-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
+      
+      .card {
+        background: var(--surface2); border: 1.5px solid var(--border);
+        padding: 28px 20px; border-radius: 16px; text-align: center;
+        box-shadow: var(--shadow); transition: all 0.25s ease;
+      }
+      .card:hover { border-color: var(--red-mid); box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+      .card-icon { font-size: 32px; margin-bottom: 14px; display: block; }
+      .card p { font-size: 14px; text-align: center; }
+
+      footer {
+        background: var(--surface); border-top: 1.5px solid var(--border);
+        padding: 40px 5vw; text-align: center; font-size: 13px;
+        font-weight: 600; color: var(--text-muted); letter-spacing: 0.02em;
+      }
+
+      /* ── REVEAL ANIMS ── */
+      .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+      .reveal.visible { opacity: 1; transform: translateY(0); }
+      .reveal-delay-1 { transition-delay: 0.1s; }
+      .reveal-delay-2 { transition-delay: 0.2s; }
+
+      @media (max-width: 768px) {
+        .mission-box { grid-template-columns: 1fr; }
+        .nav-links { display: none; }
+        .nav-hamburger { display: block; }
+      }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-header">
+        <a class="logo" href="HomePage.html"><div class="logo-drop"></div>BLOODLINE</a>
+        <ul class="nav-links">
+            <li><a href="HomePage.html">Home</a></li>
+            <li><a href="Mission.html">Our Mission</a></li>
+            <li><a href="ContactUs.html">Contact Us</a></li>
+        </ul>
+        <div class="nav-hamburger" onclick="toggleMenu()">☰</div>
+    </nav>
+
+    <div class="container reveal">
+        <h1>About Our Website</h1>
+        
+        <p>
+            <b>Blood Line</b> is a digital healthcare platform designed to solve the critical challenge of blood shortages. 
+            Traditional manual systems often lead to life-threatening delays during emergencies. 
+            Our network provides a direct, real-time link between voluntary donors and patients or hospitals in need.
+        </p>
+
+        <h3>Our Core Purpose</h3>
+        <p>
+            We aim to create a transparent and efficient blood supply ecosystem where no life is lost due to the 
+            unavailability of blood. By digitizing donor records and blood camp information, we ensure that help is 
+            always just a few clicks away.
+        </p>
+
+        <div class="mission-box">
+            <div class="card reveal">
+                <span class="card-icon">⚡</span>
+                <p><b>Real-Time Tracking</b><br><span style="color:var(--text-sub)">Monitor live blood availability across different centers.</span></p>
+            </div>
+            <div class="card reveal reveal-delay-1">
+                <span class="card-icon">🤝</span>
+                <p><b>Direct Connection</b><br><span style="color:var(--text-sub)">Bridge the communication gap between donors and recipients.</span></p>
+            </div>
+            <div class="card reveal reveal-delay-2">
+                <span class="card-icon">🛡️</span>
+                <p><b>Secure Data</b><br><span style="color:var(--text-sub)">Ensuring the highest standards of data privacy for our donors.</span></p>
+            </div>
+        </div>
+
+        <h3>Why Choose Us?</h3>
+        <p>
+            Unlike static databases, Blood Line is a dynamic environment. We focus on location-based matching to find 
+            the nearest eligible donors, significantly reducing response times when every second counts.
+        </p>
+    </div>
+
+    <footer>
+        Blood Line | A single drop of blood can make a huge difference.
+    </footer>
+
+    <script>
+        const revealEls = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+        }, { threshold: 0.1 });
+        revealEls.forEach(el => observer.observe(el));
+
+        function toggleMenu() {
+            const links = document.querySelector('.nav-links');
+            links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+            if (links.style.display === 'flex') {
+                links.style.flexDirection = 'column'; links.style.position = 'fixed';
+                links.style.top = '75px'; links.style.left = '0'; links.style.right = '0';
+                links.style.background = 'var(--surface)'; links.style.padding = '20px';
+                links.style.borderBottom = '1.5px solid var(--border)';
+            }
+        }
+    </script>
+</body>
+</html>

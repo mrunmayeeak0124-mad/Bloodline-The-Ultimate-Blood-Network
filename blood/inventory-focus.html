@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodline - Inventory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-red: #ff3131;
+            /* Mild bright status colors */
+            --status-green: #2ecc71;
+            --status-yellow: #f39c12;
+            --status-red: #e74c3c;
+            --bg-light: #f8f9fa;
+            --card-white: rgba(255, 255, 255, 0.8);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            background-color: var(--bg-light);
+            color: #2d3436;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Branding Left Top */
+        .brand-container {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-mark {
+            width: 30px;
+            height: 30px;
+            background: var(--primary-red);
+            border-radius: 50% 50% 50% 10%;
+            transform: rotate(-45deg);
+            box-shadow: 0 4px 10px rgba(255, 49, 49, 0.2);
+        }
+
+        .brand-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-text span { color: var(--primary-red); }
+
+        /* Centered Header */
+        header {
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            margin: 0;
+            color: #1a1a1a;
+            letter-spacing: -2px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #636e72;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* Inventory Grid */
+        .inventory-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 30px;
+            width: 85%;
+            max-width: 1100px;
+            padding: 50px 0;
+        }
+
+        .blood-bag {
+            position: relative;
+            background: var(--card-white);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 35px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+
+        .blood-bag:hover {
+            transform: translateY(-10px);
+            background: #ffffff;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Status Glow Effects */
+        .status-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            filter: blur(35px);
+            z-index: -1;
+            opacity: 0.25;
+            transition: opacity 0.3s ease;
+        }
+
+        .blood-bag:hover .status-glow { opacity: 0.45; }
+
+        .green { background: var(--status-green); }
+        .yellow { background: var(--status-yellow); }
+        .red { background: var(--status-red); }
+
+        .bag-icon {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .bag-id {
+            font-weight: 700;
+            color: #2d3436;
+            font-size: 1rem;
+        }
+
+        /* Modal / Window */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 45px;
+            border-radius: 40px;
+            width: 340px;
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.1);
+        }
+
+        .modal-content h3 { font-size: 1.6rem; margin: 0 0 10px 0; }
+        
+        .expiry-date-label { 
+            display: block;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            color: #636e72;
+        }
+        .expiry-date-label b { color: var(--primary-red); }
+
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 16px;
+            border-radius: 20px;
+            border: none;
+            font-family: inherit;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-remove { background: #1a1a1a; color: white; }
+        .btn-remove:hover { background: var(--primary-red); transform: scale(1.02); }
+
+        .btn-keep { background: #f1f2f6; color: #2d3436; }
+        .btn-keep:hover { background: #dfe4ea; }
+
+        /* Back Button */
+        .back-btn {
+            position: absolute;
+            top: 35px; right: 40px;
+            text-decoration: none; color: #1a1a1a;
+            font-weight: 700; padding: 10px 20px;
+            background: white; border-radius: 12px;
+            border: 1px solid #e2e8f0; transition: 0.3s;
+        }
+        .back-btn:hover { background: var(--primary-red); color: white; }
+
+    </style>
+</head>
+<body>
+    <a href="check_expirydate.html" class="back-btn">← Back</a>
+    <div class="brand-container">c
+        <div class="logo-mark"></div>
+        <h1 class="brand-text">blood<span>line</span></h1>
+    </div>
+
+    <header>
+        <span class="subtitle">Inventory Focus</span>
+        <h1>A+</h1>
+    </header>
+
+    <div class="inventory-container" id="inventory">
+        <div class="blood-bag" onclick="openModal('BAG-9901', 'Nov 28, 2026', this)">
+            <div class="status-glow green"></div>
+            <span class="bag-icon">🩸</span>
+            <span class="bag-id">BAG-9901</span>
+        </div>
+
+        <div class="blood-bag" onclick="openModal('BAG-8824', 'May 12, 2026', this)">
+            <div class="status-glow yellow"></div>
+            <span class="bag-icon">🩸</span>
+            <span class="bag-id">BAG-8824</span>
+        </div>
+
+        <div class="blood-bag" onclick="openModal('BAG-7704', 'Apr 19, 2026', this)">
+            <div class="status-glow red"></div>
+            <span class="bag-icon">🩸</span>
+            <span class="bag-id">BAG-7704</span>
+        </div>
+
+        <div class="blood-bag" onclick="openModal('BAG-9905', 'Dec 05, 2026', this)">
+            <div class="status-glow green"></div>
+            <span class="bag-icon">🩸</span>
+            <span class="bag-id">BAG-9905</span>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <h3 id="modalTitle">BAG-XXXX</h3>
+            <span class="expiry-date-label">Expiry: <b id="modalExpiry">N/A</b></span>
+            <div class="modal-buttons">
+                <button class="btn btn-remove" onclick="removeBag()">Remove Bag</button>
+                <button class="btn btn-keep" onclick="closeModal()">Keep</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+<script>
+    let activeTargetBagId = null;
+    let currentBagElement = null;
+
+    // 1. QUERY LIVE SEGMENTED DATA AND COMPUTE SHELF LIFE STATUS
+    async function loadBloodGroupFocusView() {
+        // Automatically determine targeted blood group from URL parameters (e.g., focus.html?group=A+)
+        const urlParams = new URLSearchParams(window.location.search);
+        const focusGroup = urlParams.get('group') || 'A+';
+        
+        // Update headers dynamically
+        document.querySelector('header h1').innerText = focusGroup;
+
+        const result = await BloodLineAPI.fetchInventoryAudit();
+        if(result.success) {
+            const container = document.getElementById('inventory');
+            container.innerHTML = ''; // Wipe template loops
+
+            // Filter bags that match this specific blood group screen parameter
+            const relevantBags = result.inventory.filter(bag => bag.bloodGroup === focusGroup);
+
+            if(relevantBags.length === 0) {
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#888; font-weight:700; margin-top:20px;">No bags currently registered in stock for ${focusGroup}.</p>`;
+                return;
+            }
+
+            relevantBags.forEach(bag => {
+                const expiryDate = new Date(bag.expiryDate);
+                const today = new Date();
+                const daysRemaining = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+
+                // Contextual Color Triaging Logic matching your CSS specifications:
+                let statusClass = 'green';  // Safe stock buffer
+                if(daysRemaining <= 10 && daysRemaining > 0) statusClass = 'yellow'; // Approaching shelf limit flags
+                if(daysRemaining <= 0 || bag.status === 'Expired') statusClass = 'red'; // Danger threshold exceeded
+
+                // Standardized date printing adjustments
+                const options = { month: 'short', day: 'numeric', year: 'numeric' };
+                const localizedExpiryString = expiryDate.toLocaleDateString('en-US', options);
+
+                const bagDiv = document.createElement('div');
+                bagDiv.className = 'blood-bag';
+                // Pass MongoDB unique system keys directly down to operational handlers
+                bagDiv.setAttribute('onclick', `openModal('${bag.bagSerialNumber}', '${localizedExpiryString}', this, '${bag._id}')`);
+                
+                bagDiv.innerHTML = `
+                    <div class="status-glow ${statusClass}"></div>
+                    <span class="bag-icon">🩸</span>
+                    <span class="bag-id">${bag.bagSerialNumber}</span>
+                `;
+                container.appendChild(bagDiv);
+            });
+        }
+    }
+
+    function openModal(serial, expiry, element, dbId) {
+        currentBagElement = element;
+        activeTargetBagId = dbId; // Track internal record keys
+        document.getElementById('modalTitle').innerText = serial;
+        document.getElementById('modalExpiry').innerText = expiry;
+        document.getElementById('modalOverlay').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').style.display = 'none';
+        currentBagElement = null;
+        activeTargetBagId = null;
+    }
+
+    // 2. CONNECT DELETION ACTION PATHWAY TO BACKEND
+    async function removeBag() {
+        if (activeTargetBagId && currentBagElement) {
+            // Optional: You can create a distinct DELETE route in server.js,
+            // or perform an operational status updates trigger via fetch transitions
+            try {
+                // Example route assuming you add a standard deletion pathway:
+                const response = await fetch(`http://localhost:5000/api/inventory/bag/${activeTargetBagId}`, { method: 'DELETE' });
+                const data = await response.json();
+                
+                if(data.success || response.status === 404) { // 404 safety baseline checks
+                    currentBagElement.style.opacity = '0';
+                    currentBagElement.style.transform = 'scale(0.5) rotate(10deg)';
+                    
+                    setTimeout(() => {
+                        currentBagElement.remove();
+                        closeModal();
+                    }, 400);
+                }
+            } catch (err) {
+                // UI simulation fallback strategy if deletion routing blocks are still finalizing
+                currentBagElement.remove();
+                closeModal();
+            }
+        }
+    }
+
+    window.onload = loadBloodGroupFocusView;
+</script>
+
+</body>
+</html>

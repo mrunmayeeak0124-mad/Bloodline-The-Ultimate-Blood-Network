@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BloodLine | Blood Bank Locator</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;color:white;}
+
+/* BACKGROUND */
+.bg{
+position:fixed;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#1a0000,#330000,#0d0000);
+z-index:-1;
+}
+
+/* HEADER */
+header{
+padding:20px 50px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{font-size:28px;font-weight:bold;}
+
+/* NAV */
+nav{
+background:rgba(255,255,255,0.05);
+text-align:center;
+padding:12px 0;
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+nav a{
+color:#ffccd5;
+margin:0 20px;
+text-decoration:none;
+font-weight:600;
+}
+
+/* MARQUEE */
+marquee{
+color:#ff8fa3;
+padding:10px;
+font-style:italic;
+}
+
+/* CONTAINER */
+.container{
+width:90%;
+max-width:1200px;
+margin:30px auto;
+}
+
+/* GRID */
+.grid{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+}
+
+/* CARD */
+.card{
+background:#ffafc4;
+color:#4f000e;
+padding:20px;
+border-radius:15px;
+border-left:5px solid #ff4d6d;
+}
+
+/* SIDEBAR */
+.sidebar{
+flex:1;
+background:#ffccd5;
+color:#4f000e;
+padding:20px;
+border-radius:15px;
+}
+
+/* BUTTON */
+.btn{
+margin-top:10px;
+padding:10px 20px;
+border:none;
+border-radius:25px;
+background:#ff4d6d;
+color:white;
+cursor:pointer;
+}
+
+/* INPUT */
+input, select{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:20px;
+border:none;
+}
+
+/* RESULT */
+.result{
+margin-top:15px;
+padding:15px;
+background:#1a0000;
+border-radius:10px;
+color:white;
+}
+
+/* FOOTER */
+footer{
+text-align:center;
+padding:30px;
+color:#ffbac7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<header>
+<div class="logo">❤️ BLOODLINE</div>
+<a href="sectionDonar.html" style="color:#ffc9d3;">← Dashboard</a>
+</header>
+
+<nav>
+<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10638672/">Awareness</a>
+<a href="https://naco.mohfw.gov.in/sites/default/files/Letter%20reg.%20%20guidelines%20for%20blood%20donor%20selection%20&%20referral%20-2017.pdf">Guidelines</a>
+<a href="https://www.ndtv.com/topic/blood-donation">Reports</a>
+<a href="https://www.redcrossblood.org/donate-blood/blood-donation-process/what-happens-to-donated-blood.html">Journey</a>
+</nav>
+
+<marquee>
+"Find nearby blood banks instantly and save critical time."
+</marquee>
+
+<div class="container">
+
+<h2>🏥 Blood Bank Locator</h2>
+
+<div class="grid">
+
+<!-- MAP -->
+<div style="flex:2;" class="card">
+<iframe 
+src="https://www.google.com/maps?q=Pune%20blood%20bank&output=embed"
+width="100%" height="350" style="border-radius:15px;">
+</iframe>
+
+<p style="margin-top:10px;">📍 Showing nearby blood banks (demo map)</p>
+</div>
+
+<!-- SEARCH PANEL -->
+<div class="sidebar">
+
+<h3>🔍 Smart Search</h3>
+
+<input type="text" id="city" placeholder="Enter city (e.g. Pune)">
+
+<select id="blood">
+<option value="">Select Blood Group</option>
+<option>O+</option>
+<option>O-</option>
+<option>A+</option>
+<option>B+</option>
+<option>AB+</option>
+</select>
+
+<select id="type">
+<option value="">Type</option>
+<option>Government</option>
+<option>Private</option>
+<option>NGO</option>
+</select>
+
+<button class="btn" onclick="search()">Search</button>
+
+<div id="results"></div>
+
+</div>
+
+</div>
+
+<!-- LIST -->
+<div class="card" style="margin-top:20px;">
+<h3>🩸 Nearby Centers (Sample Data)</h3>
+
+<ul id="list">
+<li>Narayana Blood Center – 24/7</li>
+<li>Red Cross Blood Bank – Free donor support</li>
+<li>Lifeline Trust – Rare blood registry</li>
+</ul>
+
+</div>
+
+<footer>
+"Right place, right time — saves lives."
+</footer>
+
+<script>
+
+function search(){
+
+let city = document.getElementById("city").value;
+let blood = document.getElementById("blood").value;
+
+let output = document.getElementById("results");
+
+if(!city){
+output.innerHTML = "<div class='result'>⚠️ Enter city first</div>";
+return;
+}
+
+output.innerHTML = `
+<div class='result'>
+📍 Searching in <b>${city}</b><br>
+🩸 Blood Group: ${blood || "Any"}<br><br>
+
+✅ 3 matching centers found<br>
+• City Blood Bank<br>
+• Red Cross Unit<br>
+• LifeCare Center
+</div>
+`;
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BloodLine | Donor Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+        }
+
+        /* BACKGROUND */
+        .bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0000, #330000, #0d0000);
+            z-index: -1;
+        }
+
+        /* HEADER */
+        header {
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: #ff90a4;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* NAVBAR */
+        nav {
+            background: rgba(255,255,255,0.05);
+            text-align: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        nav a {
+            color: #ffccd5;
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        /* MARQUEE */
+        marquee {
+            color: #ff8fa3;
+            padding: 10px;
+            font-style: italic;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* TITLE */
+        .title {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .title h1 {
+            font-size: 38px;
+        }
+
+        .title p {
+            color: #ffccd5;
+            margin-top: 10px;
+        }
+
+        /* CONTAINER */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        /* CARD STYLE (NO GLASS) */
+        .card {
+            display: block;
+            text-decoration: none;
+            color: white;
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 15px;
+            background: #ffafc4;
+            border-left: 5px solid #ff4d6d;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateX(8px);
+            background: #f8dcdc;
+            box-shadow: 0 8px 20px rgba(255,77,109,0.25);
+        }
+
+        .card h3 {
+            color: #4f000e;
+            margin-bottom: 5px;
+        }
+
+        .problem {
+            font-size: 14px;
+            color: #c1265c;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #ffbac7;
+            font-style: italic;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<header>
+    <div class="logo">❤️ BLOODLINE</div>
+    <a href="homeDonar.html" style="color:#ffc9d3;"> ← Back</a>
+</header>
+
+<!-- NAV -->
+<nav>
+    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10638672/">Awareness</a>
+    <a href="https://naco.mohfw.gov.in/sites/default/files/Letter%20reg.%20%20guidelines%20for%20blood%20donor%20selection%20&%20referral%20-2017.pdf">Guidelines</a>
+    <a href="https://www.ndtv.com/topic/blood-donation">Reports/News</a>
+    <a href="https://www.redcrossblood.org/donate-blood/blood-donation-process/what-happens-to-donated-blood.html">Journey</a>
+</nav>
+
+<marquee>
+    "Your one donation can be someone's second chance at life."
+</marquee>
+
+<div class="title">
+    <h1>Donor Smart Panel</h1>
+    <p>Select a feature to continue</p>
+</div>
+
+<div class="container">
+
+    <a href="eligibilityDonar.html" class="card">
+        <h3>🧠 Eligibility Checker</h3>
+        <div class="problem">Check if you're fit to donate instantly</div>
+    </a>
+
+    <a href="awareness.html" class="card">
+        <h3>😟 Fear & Awareness</h3>
+        <div class="problem">Clear myths and learn the truth</div>
+    </a>
+
+    <a href="locator.html" class="card">
+        <h3>📍 Find Blood Banks</h3>
+        <div class="problem">Locate centers near you</div>
+    </a>
+
+    <a href="datadisplay.html" class="card">
+        <h3>🏆 Rewards & Badges</h3>
+        <div class="problem">Get recognized for your impact</div>
+    </a>
+
+    <a href="emergency.html" class="card">
+        <h3>🚨 Emergency Alerts</h3>
+        <div class="problem">Receive urgent blood requests</div>
+    </a>
+
+    <a href="appointment.html" class="card">
+        <h3>📅 Book Appointment</h3>
+        <div class="problem">Schedule your donation easily</div>
+    </a>
+
+    <a href="healthguide.html" class="card">
+        <h3>💪 Health Guide</h3>
+        <div class="problem">Pre & post donation care</div>
+    </a>
+
+</div>
+
+<footer>
+    "Every donor is a hero in disguise."
+</footer>
+
+</body>
+</html>

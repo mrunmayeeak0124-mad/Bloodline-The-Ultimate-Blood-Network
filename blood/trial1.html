@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodline | Operational Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            padding: 20px 20px 100px 20px;
+            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 245, 245, 0.9)), url('https://thumbs.dreamstime.com/b/abstract-medical-background-flat-icons-symbols-concepts-ideas-healthcare-technology-innovation-medicine-health-142709007.jpg?w=992');
+            background-size: cover; background-position: center; background-attachment: fixed;
+        }
+
+        .navbar-p2 { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; margin-bottom: 40px; }
+        .logo-section-p2 { display: flex; align-items: center; gap: 12px; }
+        .logo-icon-p2 { width: 38px; height: 38px; background-color: #d63031; border-radius: 10px; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+        
+        .call-section {
+            display: flex; align-items: center; gap: 10px; background: #ffffff; padding: 12px 24px;
+            border-radius: 50px; border: 2px solid #d63031; text-decoration: none; color: #d63031; font-weight: 700;
+            transition: 0.3s;
+        }
+        .call-section:hover { background: #fff5f5; transform: scale(1.05); }
+
+        header { text-align: center; margin-bottom: 50px; }
+        header h1 { color: #b30000; font-size: 44px; font-weight: 800; text-transform: uppercase; }
+        header p { color: #636e72; }
+
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .option-card { background: rgba(255, 255, 255, 0.95); padding: 30px 20px; border-radius: 20px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); text-decoration: none; color: inherit;}
+        .option-card:hover { transform: translateY(-5px); border-color: #d63031; color: #b30000; }
+        .mod-num { font-size: 11px; color: #d63031; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- FIXED BOTTOM NAV BAR --- */
+        #bottomNav {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e2e8f0;
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .btn-back {
+            background: #d63031; color: white; padding: 12px 30px; border-radius: 50px;
+            border: none; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(214, 48, 49, 0.2);
+            text-decoration: none;
+        }
+        .btn-back:hover { background: #b30000; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar-p2">
+        <div class="logo-section-p2">
+            <div class="logo-icon-p2">B</div>
+            <span style="font-size: 24px; font-weight: 800; text-transform: uppercase;">Bloodline</span>
+        </div>
+        <a href="tel:102" class="call-section"><span>📞</span> Call for Blood</a>
+    </nav>
+
+    <header>
+        <h1>Operational Dashboard</h1>
+        <p>Operational Dashboard • Healthcare Services</p>
+    </header>
+
+    <div class="dashboard-grid">
+        <a class="option-card" href="3rd+add.html"><span class="mod-num">Module 01</span>Blood Bag Count</a>
+        <a class="option-card" href="check_expirydate.html"><span class="mod-num">Module 02</span>Check Expiry Dates</a>
+        <a class="option-card" href="patient.html"><span class="mod-num">Module 03</span>Patient's Enter</a>
+        <a class="option-card" href="cold_chain.html"><span class="mod-num">Module 04</span>Cold Chain Maintenance</a>
+        <a class="option-card" href="donor_receiver_record.html"><span class="mod-num">Module 05</span>Donor to Receiver Blood Records</a>
+        <a class="option-card" href="rare_bloodgroup.html"><span class="mod-num">Module 06</span>Rare Blood Special Record</a>
+        <a class="option-card" href="BMWM.html"><span class="mod-num">Module 07</span>BMWM</a>
+        <a class="option-card" href="blood_check.html"><span class="mod-num">Module 08</span>Blood Bag Check</a>
+    </div>
+
+    <div id="bottomNav">
+        <a href="trial2.html" class="btn-back">← Log Out from System</a>
+    </div>
+
+</body>
+</html>

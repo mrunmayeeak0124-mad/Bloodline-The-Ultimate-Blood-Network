@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Blood Line - The Real Time Blood Network</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+        <style>
+          :root {
+            --red:        #e02020;
+            --red-deep:   #b01515;
+            --red-light:  #fff1f1;
+            --red-mid:    #ffd6d6;
+            --bg:         #fdf6f6;
+            --surface:    #ffffff;
+            --surface2:   #fff8f8;
+            --border:     #f0d4d4;
+            --text:       #1a0a0a;
+            --text-sub:   #7a4a4a;
+            --text-muted: #b08080;
+            --green:      #1d9e5a;
+            --green-bg:   #edfaf3;
+            --green-mid:  #b5e8cf;
+            --amber:      #c97a00;
+            --amber-bg:   #fff8ec;
+            --blue:       #2563eb;
+            --blue-bg:    #eff6ff;
+            --blue-mid:   #bfdbfe;
+            --shadow:     0 4px 28px rgba(180,60,60,0.10);
+            --shadow-lg:  0 12px 48px rgba(180,60,60,0.16);
+            --radius:     20px;
+          }
+
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+
+          html { scroll-behavior: smooth; }
+
+          body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            padding-top: 110px;
+          }
+
+          /* ── FIXED NAVIGATION HEADER ── */
+          header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+            background: rgba(253,246,246,0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1.5px solid var(--border);
+            padding: 0 5vw; height: 75px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 20px rgba(180,60,60,0.07);
+          }
+
+          .logo-area { display: flex; align-items: center; gap: 11px; }
+          .logo-icon {
+            font-size: 26px; display: inline-flex; align-items: center; justify-content: center;
+            animation: pulse 2.8s ease-in-out infinite;
+          }
+          @keyframes pulse {
+            0%,100% { transform: scale(1); filter: drop-shadow(0 2px 4px rgba(224,32,32,0.2)); }
+            50%      { transform: scale(1.12); filter: drop-shadow(0 4px 12px rgba(224,32,32,0.4)); }
+          }
+          .brand-name { font-family: 'Fraunces', serif; font-weight: 900; font-size: 24px; letter-spacing: -0.02em; color: var(--red); }
+          header div:last-child { font-size: 13px !important; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+
+          /* ── SCROLLING ANNOUNCEMENT ── */
+          nav { position: fixed; top: 75px; left: 0; right: 0; z-index: 190; background: var(--red-light); border-bottom: 1.5px solid var(--red-mid); padding: 6px 0; }
+          marquee { font-size: 13px; font-weight: 700; color: var(--red); letter-spacing: 0.02em; }
+
+          /* ── SECTION ARCHITECTURE ── */
+          .section-wrapper { max-width: 1200px; margin: 40px auto; width: 90%; }
+          .section-heading { font-family: 'Fraunces', serif; font-weight: 900; font-size: 32px; color: var(--text); letter-spacing: -0.02em; margin-bottom: 8px; text-align: center; }
+          .section-subheading { font-size: 15px; font-weight: 500; color: var(--text-sub); text-align: center; margin-bottom: 40px; }
+
+          /* ── HERO HERO CONTAINER ── */
+          .container {
+            max-width: 1200px; margin: 40px auto 60px; width: 90%;
+            background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius);
+            padding: 60px 5vw; box-shadow: var(--shadow-lg);
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 48px; align-items: center;
+          }
+
+          h1 {
+            grid-column: 1 / -1; font-family: 'Fraunces', serif; font-weight: 900; font-size: clamp(36px, 4.5vw, 54px); line-height: 1.1;
+            letter-spacing: -0.03em; color: var(--text); text-align: center; margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--text), var(--red-deep)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+          }
+
+          h2 { grid-column: 1 / -1; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); text-align: center; margin-bottom: 32px; font-style: normal !important; }
+          .text-section { display: flex; flex-direction: column; gap: 24px; }
+          .text-section p { font-size: 16px; font-weight: 500; color: var(--text-sub); line-height: 1.75; text-align: left; }
+          .text-section p b { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; color: var(--red); letter-spacing: -0.01em; display: inline-block; margin-bottom: 4px; line-height: 1.3; }
+          
+          .image-section { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+          .hero-img { width: 100%; max-width: 480px; height: auto; border-radius: 16px; border: none; box-shadow: var(--shadow-lg); transition: transform 0.3s ease; }
+          .hero-img:hover { transform: scale(1.02); }
+          .image-section h3 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 900; color: var(--text); letter-spacing: -0.01em; margin-bottom: 14px; }
+
+          /* ── GLOBAL BUTTONS ── */
+          .reg-button {
+            background: var(--red); color: white; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 800;
+            padding: 14px 36px; border-radius: 12px; border: none; cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 6px 24px rgba(224,32,32,0.32); transition: all 0.22s ease;
+          }
+          .reg-button:hover { background: var(--red-deep); transform: translateY(-2px); box-shadow: 0 10px 36px rgba(224,32,32,0.44); }
+
+          .btn-outline {
+            background: transparent; color: var(--text-sub); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 700;
+            padding: 14px 36px; border-radius: 12px; border: 1.5px solid var(--border); cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center; transition: all 0.22s ease; margin-left: 12px;
+          }
+          .btn-outline:hover { border-color: var(--red-mid); color: var(--red); background: var(--red-light); }
+
+          /* ── NEW SECTION: STOCKS DASHBOARD ── */
+          .stock-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 60px; }
+          .stock-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 16px; padding: 24px 20px; text-align: center; box-shadow: var(--shadow); transition: all 0.25s ease; }
+          .stock-card:hover { border-color: var(--red-mid); box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+          .blood-type { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 900; color: var(--red); line-height: 1; margin-bottom: 6px; }
+          .stock-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+          .status-pill { display: inline-block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 12px; border-radius: 20px; margin-top: 14px; }
+          .status-pill.critical { background: var(--red-light); color: var(--red); border: 1px solid var(--red-mid); }
+          .status-pill.low { background: var(--amber-bg); color: var(--amber); border: 1px solid #f0d698; }
+          .status-pill.stable { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-mid); }
+
+          /* ── NEW SECTION: HOW IT WORKS ── */
+          .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 60px; }
+          .step-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 36px 28px; position: relative; box-shadow: var(--shadow); }
+          .step-num { font-family: 'Fraunces', serif; font-size: 54px; font-weight: 900; color: var(--red-mid); line-height: 1; position: absolute; top: 20px; right: 24px; opacity: 0.7; }
+          .step-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+          .step-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 10px; }
+          .step-desc { font-size: 14px; font-weight: 500; color: var(--text-sub); line-height: 1.6; }
+
+          /* ── NEW SECTION: REAL-TIME COUNTER BAND ── */
+          .stats-band { background: var(--red); border-radius: var(--radius); padding: 40px 20px; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; box-shadow: var(--shadow-lg); margin-bottom: 60px; }
+          .stat-item { border-right: 1px solid rgba(255,255,255,0.25); }
+          .stat-item:last-child { border-right: none; }
+          .stat-val { font-family: 'Fraunces', serif; font-size: 44px; font-weight: 900; color: white; line-height: 1; }
+          .stat-lbl { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.75); margin-top: 8px; }
+
+          /* ── NEW SECTION: LOWER DUAL ACTION CALLOUT ── */
+          .action-callout { background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 50px; text-align: center; box-shadow: var(--shadow); margin-bottom: 60px; }
+          .action-callout h3 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 900; color: var(--text); margin-bottom: 12px; }
+          .action-callout p { font-size: 16px; color: var(--text-sub); margin-bottom: 28px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+          /* ── FOOTER STYLE ── */
+          footer { background: var(--surface); border-top: 1.5px solid var(--border); padding: 40px 5vw; text-align: center; font-size: 13px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.02em; line-height: 1.5; }
+
+          /* ── RESPONSIVE RESPONSIVENESS ── */
+          @media (max-width: 960px) {
+            .container { grid-template-columns: 1fr; gap: 40px; padding: 40px 24px; }
+            .stock-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps-grid { grid-template-columns: 1fr; }
+            .stats-band { grid-template-columns: repeat(2, 1fr); gap: 24px 0; }
+            .stat-item { border-right: none; }
+            .stat-item:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.25); }
+            body { padding-top: 120px; }
+            h1 { font-size: 32px; }
+          }
+          @media (max-width: 480px) {
+            .stock-grid { grid-template-columns: 1fr; }
+            .stats-band { grid-template-columns: 1fr; }
+            .stat-item { border-right: none !important; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.25); }
+            .stat-item:last-child { border-bottom: none; }
+            .action-callout { padding: 30px 16px; }
+            .btn-outline { margin-left: 0; margin-top: 12px; display: flex; }
+            .reg-button { display: flex; width: 100%; }
+          }
+        </style>
+    </head>
+    <body>
+
+        <!-- FIXED TOP NAVIGATION -->
+        <header>
+            <div class="logo-area">
+                <span class="logo-icon">❤️</span>
+                <span class="brand-name">BLOOD-LINE</span>
+            </div>
+            <div>The Real-Time Blood Network</div>
+        </header>
+
+        <!-- LIVE UPDATES BANNER -->
+        <nav>
+            <marquee>"We make a living by what we get ; We make a life by what we give..." – Winston Churchill</marquee>
+        </nav>
+
+        <!-- HERO BRAND INTRODUCTION SECTION -->
+        <div class="container">
+            <h1>BLOOD LINE : The Real Time Blood Network</h1>
+            <h2>"You don't need a medical degree to save a life; you just need a little time and a big heart"</h2>
+
+            <div class="text-section">
+                <p>
+                    <b>Safe blood saves lives.</b><br>
+                    A single donation can help save up to three lives.
+                    Every blood donation is a gift of hope. It can mean the difference between life
+                    and death for patients in need of transfusions.
+                </p>
+                <p>
+                    Blood donation is a collective effort and a powerful act of solidarity.
+                    By coming together as a community of donors, we ensure a steady and safe
+                    blood supply for all who need it.
+                </p>
+                <p>
+                    Everyone who can donate should consider making regular voluntary, unpaid
+                    donations. Access to safe blood is essential for universal health coverage.
+                </p>
+            </div>
+
+            <div class="image-section">
+                <img class="hero-img" src="https://cdn.who.int/media/images/default-source/headquarters/campaigns/world-blood-donor-day/2025/wbdd2025-give-hope-banner.jpg?sfvrsn=7f88dc2c_14">
+                
+                <div style="margin-top: 24px; text-align: center;">
+                    <h3>Become a Hero Today</h3>
+                    <a href="Register.html" class="reg-button">Register as a Donor</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW SECTION: REAL-TIME INVENTORY TRACKER -->
+        <div class="section-wrapper">
+            <h3 class="section-heading">Live Network Inventory Stock</h3>
+            <p class="section-subheading">Real-time tracking of regional blood reserve bank levels across network centers.</p>
+            
+            <div class="stock-grid">
+                <div class="stock-card">
+                    <div class="blood-type">O-</div>
+                    <div class="stock-label">Universal Donor</div>
+                    <span class="status-pill critical">Critical Demand</span>
+                </div>
+                <div class="stock-card">
+                    <div class="blood-type">A+</div>
+                    <div class="stock-label">High Prevalence</div>
+                    <span class="status-pill low">Low Stock</span>
+                </div>
+                <div class="stock-card">
+                    <div class="blood-type">B-</div>
+                    <div class="stock-label">Rare Subtype</div>
+                    <span class="status-pill stable">Stable Stock</span>
+                </div>
+                <div class="stock-card">
+                    <div class="blood-type">AB+</div>
+                    <div class="stock-label">Universal Recipient</div>
+                    <span class="status-pill stable">Stable Stock</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW SECTION: IMPACT DASHBOARD DATA COUNTERS -->
+        <div class="section-wrapper">
+            <div class="stats-band">
+                <div class="stat-item">
+                    <div class="stat-val">14,240</div>
+                    <div class="stat-lbl">Active Network Donors</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-val">38,190</div>
+                    <div class="stat-lbl">Total Lives Impacted</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-val">164</div>
+                    <div class="stat-lbl">Partnered Clinics & Hubs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-val">04m</div>
+                    <div class="stat-lbl">Avg Response Window</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW SECTION: THE DONATION WORKFLOW MAP -->
+        <div class="section-wrapper">
+            <h3 class="section-heading">How BloodLine Works</h3>
+            <p class="section-subheading">Connecting active donors with local clinical requests instantly in three easy operational steps.</p>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <span class="step-num">01</span>
+                    <span class="step-icon">📋</span>
+                    <h4 class="step-title">Quick Enrollment</h4>
+                    <p class="step-desc">Create your medical donor bio-profile securely to list your verified blood group group criteria safely.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-num">02</span>
+                    <span class="step-icon">📲</span>
+                    <h4 class="step-title">Matching Alerts</h4>
+                    <p class="step-desc">Get instant smart geo-targeted requests on your feed whenever medical centers nearby flag your profile criteria.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-num">03</span>
+                    <span class="step-icon">🏥</span>
+                    <h4 class="step-title">Direct Lifeline</h4>
+                    <p class="step-desc">Check into your assigned clinic hub, complete a fast medical review screening, and complete your vital donation.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW SECTION: ACTION SPLIT BOX CONTAINER -->
+        <div class="section-wrapper">
+            <div class="action-callout">
+                <h3>Ready to Make a Lifesaving Impact?</h3>
+                <p>Join BloodLine to secure immediate access for emergency clinical blood requests or sign up as a voluntary champion donor within your district area.</p>
+                <div>
+                    <a href="Register.html" class="reg-button">Register as a Donor</a>
+                    <a href="RequestEmergency.html" class="btn-outline">Request Emergency Supply</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODERNIZED CORE FOOTER SECTION -->
+        <footer>
+            The Real Time Blood Network | Every drop of blood is a signature of hope on someone else's lease of life...
+        </footer>
+
+    </body>
+</html>
