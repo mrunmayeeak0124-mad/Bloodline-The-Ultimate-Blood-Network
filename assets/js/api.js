@@ -1,5 +1,5 @@
 // --- CENTRAL BLOODLINE NETWORK GATEWAY ---
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://hemoflow-iic27l3x3-mrunmayee2409.vercel.app';
 
 const BloodLineAPI = {
   
