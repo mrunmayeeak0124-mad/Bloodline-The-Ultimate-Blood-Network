@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HemoFlow | Professional Blood Camp Manager</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome icons library link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ── FIX SIDEBAR CLIPPING & ENSURE DROPDOWN CLICKABILITY ── */
+        .sidebar {
+            overflow: visible !important; /* Prevents dropdown from being cut off */
+        }
+
+        .logo-dropdown-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .sidebar .logo {
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar .logo:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .dropdown-arrow {
+            font-size: 10px;
+            margin-left: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar .logo.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* ── HIGH Z-INDEX DROPDOWN MENU ── */
+        .module-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            width: 250px;
+            background: #ffffff;
+            border: 1.5px solid #f0d4d4;
+            border-radius: 14px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+            padding: 10px;
+            z-index: 99999 !important; /* Renders on top of everything */
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .module-dropdown.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #d63031;
+            padding: 6px 8px;
+            border-bottom: 1px solid #f0d4d4;
+            margin-bottom: 6px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #1a0a0a;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: #fff1f1;
+        }
+
+        .dropdown-item strong {
+            display: block;
+            color: #1a0a0a;
+            pointer-events: none; /* Prevents nested child from blocking click */
+        }
+
+        .dropdown-item small {
+            display: block;
+            font-size: 10px;
+            color: #7a4a4a;
+            pointer-events: none; /* Prevents nested child from blocking click */
+        }
+
+        .dropdown-item .icon {
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= MODERN ANIMATED SPLASH PAGE ================= -->
+    <div id="welcome-screen" class="welcome-overlay">
+        <div class="welcome-content">
+            <div class="welcome-logo">
+                <i class="fa-solid fa-droplet"></i>
+                <h1>HemoFlow</h1>
+            </div>
+            <h2>Blood Camp Management System</h2>
+            <p>Streamline venues, coordinate dynamic campaigns, log vital metrics, and retain fully accessible historical archives.</p>
+            <button id="enter-system-btn" class="enter-btn">
+                Get Started <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- SIDEBAR NAVIGATION SYSTEM -->
+    <aside class="sidebar">
+    <!-- CLICKABLE LOGO TRIGGER WITH DROPDOWN -->
+    <div class="logo-dropdown-container">
+        <div class="logo" id="hemoflowLogoBtn" onclick="toggleModuleMenu(event)">
+            <i class="fa-solid fa-droplet"></i>
+            <span>HemoFlow</span>
+            <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+        </div>
+
+        <!-- 4-MODULE DROPDOWN MENU WITH DIRECT HTML LINKS -->
+        <div class="module-dropdown" id="moduleDropdownMenu">
+            <div class="dropdown-header">Switch Portal Module</div>
+            <a href="../donor/homeDonar.html" class="dropdown-item">
+                <span class="icon">❤️</span>
+                <div>
+                    <strong>Donate Portal</strong>
+                    <small>Register & track donations</small>
+                </div>
+            </a>
+            <a href="index.html" class="dropdown-item">
+                <span class="icon">🏥</span>
+                <div>
+                    <strong>Camp Management</strong>
+                    <small>Schedule & track blood drives</small>
+                </div>
+            </a>
+            <a href="../matchmaker/index.html" class="dropdown-item">
+                <span class="icon">🔍</span>
+                <div>
+                    <strong>Matchmaking</strong>
+                    <small>Real-time emergency requests</small>
+                </div>
+            </a>
+            <a href="../blood/trial2.html" class="dropdown-item">
+                <span class="icon">🩸</span>
+                <div>
+                    <strong>Blood Bank Management</strong>
+                    <small>Inventory & stock management</small>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <nav class="nav-menu">
+        <button class="nav-btn active" data-target="dashboard">
+            <i class="fa-solid fa-chart-simple"></i> Dashboard
+        </button>
+        <button class="nav-btn" data-target="schedule">
+            <i class="fa-solid fa-calendar-plus"></i> Schedule Camp
+        </button>
+        <button class="nav-btn" data-target="live-tracker">
+            <i class="fa-solid fa-circle-dot live-icon"></i> Live Tracker
+        </button>
+        <button class="nav-btn" data-target="history">
+            <i class="fa-solid fa-folder-open"></i> Camp Archives
+        </button>
+    </nav>
+    <div class="sidebar-footer">
+        <p>Organizer System Suite v2.0</p>
+    </div>
+</aside>
+
+        <nav class="nav-menu">
+            <button class="nav-btn active" data-target="dashboard">
+                <i class="fa-solid fa-chart-simple"></i> Dashboard
+            </button>
+            <button class="nav-btn" data-target="schedule">
+                <i class="fa-solid fa-calendar-plus"></i> Schedule Camp
+            </button>
+            <button class="nav-btn" data-target="live-tracker">
+                <i class="fa-solid fa-circle-dot live-icon"></i> Live Tracker
+            </button>
+            <button class="nav-btn" data-target="history">
+                <i class="fa-solid fa-folder-open"></i> Camp Archives
+            </button>
+        </nav>
+        <div class="sidebar-footer">
+            <p>Organizer System Suite v2.0</p>
+        </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="main-content">
+        
+        <!-- PAGE 1: DASHBOARD -->
+        <section id="dashboard" class="page-section active">
+            <div class="welcome-banner">
+                <div>
+                    <h2>Welcome Back, Coordinator!</h2>
+                    <p>Track metrics, manage scheduled locations, and review past drives on the fly.</p>
+                </div>
+                <div class="quick-status-badge">
+                    <span class="status-indicator online"></span> Database Linked
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card pop-trigger" data-info="The sum of all blood units safely gathered across all finalized historical camps.">
+                    <div class="stat-icon red-bg"><i class="fa-solid fa-heart"></i></div>
+                    <div class="stat-details">
+                        <h3 id="dash-total-collected">0 Units</h3>
+                        <p>Total Collected</p>
+                    </div>
+                </div>
+                <div class="stat-card pop-trigger" data-info="Scheduled camps waiting to launch. Click 'Schedule Camp' to create a new live session!">
+                    <div class="stat-icon blue-bg"><i class="fa-solid fa-calendar-days"></i></div>
+                    <div class="stat-details">
+                        <h3 id="dash-scheduled-count">0 Camps</h3>
+                        <p>Upcoming Camps</p>
+                    </div>
+                </div>
+                <div class="stat-card pop-trigger" data-info="Average performance target percentage met across all completed history logs.">
+                    <div class="stat-icon green-bg"><i class="fa-solid fa-percent"></i></div>
+                    <div class="stat-details">
+                        <h3 id="dash-success-rate">0%</h3>
+                        <p>Target Met Rate</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="info-card">
+                    <h2><i class="fa-solid fa-clipboard-list"></i> Pre-Camp Operations Checklist</h2>
+                    <p class="subtitle">Complete these clinical tasks before starting your active tracking session.</p>
+                    <ul class="checklist">
+                        <li>
+                            <input type="checkbox" id="check-1" checked>
+                            <label for="check-1">Cold Storage unit checks & temperature validation</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="check-2">
+                            <label for="check-2">Consent form copies printed (Min 120 sets)</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="check-3" checked>
+                            <label for="check-3">Glucose treats, juice, and recovery snacks stocked</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="check-4">
+                            <label for="check-4">Hazard disposal boxes & sanitizing stations configured</label>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="info-card info-steps">
+                    <h2><i class="fa-solid fa-route"></i> Camp Management Pipeline</h2>
+                    <div class="timeline-step">
+                        <span class="step-num">1</span>
+                        <div>
+                            <h4>Define Camp Event</h4>
+                            <p>Register address details, donor collection target, and timeline values in Scheduler.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <span class="step-num">2</span>
+                        <div>
+                            <h4>Record Real-Time Donors</h4>
+                            <p>Access Live Tracker, collect individual records, details, contact lines, and group types.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <span class="step-num">3</span>
+                        <div>
+                            <h4>Compile & Archive</h4>
+                            <p>End active session to store metrics into permanent cloud memory databases.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 2: SCHEDULE CAMP -->
+        <section id="schedule" class="page-section">
+            <header class="section-header">
+                <div>
+                    <h1>Schedule Next Blood Drive</h1>
+                    <p>Enter local administrative profiles to spin up a new registration dashboard.</p>
+                </div>
+            </header>
+
+            <div class="form-container">
+                <form id="camp-schedule-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="conductor"><i class="fa-solid fa-user-doctor"></i> Conductor Organization</label>
+                            <input type="text" id="conductor" placeholder="e.g., General Hospital Red Cross" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="venue"><i class="fa-solid fa-map-location-dot"></i> Venue Full Address</label>
+                            <input type="text" id="venue" placeholder="e.g., Civic Hall Center, Lane 4" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="camp-date"><i class="fa-solid fa-calendar"></i> Planned Date</label>
+                            <input type="date" id="camp-date" required>
+                        </div>
+                        <div class="form-group row-split">
+                            <div>
+                                <label for="start-time"><i class="fa-solid fa-clock"></i> Start Time</label>
+                                <input type="time" id="start-time" required>
+                            </div>
+                            <div>
+                                <label for="end-time"><i class="fa-solid fa-clock"></i> End Time</label>
+                                <input type="time" id="end-time" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="target-donors"><i class="fa-solid fa-users"></i> Target Blood Units Count</label>
+                            <input type="number" id="target-donors" min="1" max="1000" placeholder="e.g., 25" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="camp-notes"><i class="fa-solid fa-circle-info"></i> Specific Site Protocols</label>
+                            <textarea id="camp-notes" rows="3" placeholder="Identify layout rules, local coordinator numbers, etc."></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn"><i class="fa-solid fa-circle-check"></i> Initialize Active Session</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- PAGE 3: LIVE TRACKER -->
+        <section id="live-tracker" class="page-section">
+            <header class="section-header">
+                <div>
+                    <h1>Live Session Console</h1>
+                    <p>Check in incoming donors, record details, and watch real-time target status updates.</p>
+                </div>
+                <div id="active-camp-badge" class="camp-status-badge inactive">
+                    System Idle (No Active Camp)
+                </div>
+            </header>
+
+            <div id="no-camp-warning" class="warning-alert">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <p>No active camp in memory. Please configure scheduling parameters under "Schedule Camp" to begin logging donor assets.</p>
+            </div>
+
+            <div id="active-camp-dashboard" style="display: none;">
+                <div class="active-camp-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Venue</span>
+                        <strong id="live-venue-display">---</strong>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Conductor</span>
+                        <strong id="live-conductor-display">---</strong>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Timeslot</span>
+                        <strong id="live-time-display">---</strong>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Camp Goal</span>
+                        <strong id="live-target-display">0 Units</strong>
+                    </div>
+                </div>
+
+                <div class="tracker-layout">
+                    <div class="tracker-box">
+                        <h3><i class="fa-solid fa-user-plus"></i> Record Donor Check-In</h3>
+                        <form id="donor-log-form">
+                            <div class="form-group">
+                                <label for="donor-name">Donor Full Name</label>
+                                <input type="text" id="donor-name" placeholder="Enter first & last name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="donor-phone">Phone Number</label>
+                                <input type="tel" id="donor-phone" placeholder="e.g., +1 555-0199" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="donor-address">Home Address</label>
+                                <input type="text" id="donor-address" placeholder="Street, Apartment, City" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="blood-group">Blood Group Type</label>
+                                <select id="blood-group" required>
+                                    <option value="" disabled selected>Select blood type</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="add-donor-btn"><i class="fa-solid fa-plus"></i> Log Donor Unit</button>
+                        </form>
+                    </div>
+
+                    <div class="tracker-box">
+                        <h3><i class="fa-solid fa-chart-line"></i> Current Progress</h3>
+                        <div class="progress-container">
+                            <div class="progress-bar-wrapper">
+                                <div id="live-progress-bar" class="progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="progress-labels">
+                                <span id="live-progress-text">0 / 0 Units Logged</span>
+                                <span id="live-progress-percentage">0%</span>
+                            </div>
+                        </div>
+
+                        <h3><i class="fa-solid fa-list-check"></i> Donors Logged This Session (<span id="live-log-count">0</span>)</h3>
+                        <div class="donor-log-wrapper">
+                            <table class="donor-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Contact No.</th>
+                                        <th>Blood Type</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="donor-list-body">
+                                    <tr><td colspan="4" style="text-align:center; color: var(--text-muted)">No donors checked-in yet.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button id="end-drive-btn" class="end-drive-btn">
+                            <i class="fa-solid fa-box-archive"></i> Complete & Archive Camp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 4: CAMP ARCHIVES (HISTORY) -->
+        <section id="history" class="page-section">
+            <header class="section-header">
+                <div>
+                    <h1>Completed Camp Archives</h1>
+                    <p>Review past operational details, target achievements, and localized rosters.</p>
+                </div>
+            </header>
+
+            <div id="history-container" class="history-grid"></div>
+        </section>
+    </main>
+
+    <!-- OVERLAYS -->
+    <div id="info-modal" class="modal-overlay">
+        <div class="modal-card scale-animation">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-circle-info"></i> System Alert</h3>
+                <button id="close-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-text">Default modal information text.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-ok-btn" class="action-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Event saved successfully!</div>
+
+    <script src="js/app.js"></script>
+    <script>
+// TOGGLE ANIMATED DROPDOWN MENU
+function toggleModuleMenu(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById("moduleDropdownMenu");
+    const logoBtn = document.getElementById("hemoflowLogoBtn");
+
+    dropdown.classList.toggle("show");
+    logoBtn.classList.toggle("active");
+}
+
+// CLOSE DROPDOWN ONLY WHEN CLICKING OUTSIDE THE CONTAINER
+document.addEventListener("click", function(event) {
+    const container = document.querySelector(".logo-dropdown-container");
+    const dropdown = document.getElementById("moduleDropdownMenu");
+    const logoBtn = document.getElementById("hemoflowLogoBtn");
+
+    // If click is outside the dropdown container, safely close it
+    if (container && !container.contains(event.target)) {
+        if (dropdown) dropdown.classList.remove("show");
+        if (logoBtn) logoBtn.classList.remove("active");
+    }
+});
+</script>
+</body>
+</html>

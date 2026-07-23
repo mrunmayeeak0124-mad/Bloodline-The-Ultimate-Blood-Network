@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BloodLine | Donor Dashboard</title>
+    <title>HemoFlow | Donor Dashboard</title>
 
     <style>
         * {
@@ -30,12 +30,114 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: #ff90a4;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        /* ── INTERACTIVE LOGO DROPDOWN CONTAINER ── */
+        .logo-dropdown-container {
+            position: relative;
+            display: inline-block;
         }
 
         .logo {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .logo:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .dropdown-arrow {
+            font-size: 11px;
+            color: #ffccd5;
+            margin-left: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* ── ANIMATED DROPDOWN MENU ── */
+        .module-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 0;
+            width: 270px;
+            background: #ffffff;
+            border: 1.5px solid #f0d4d4;
+            border-radius: 16px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+            padding: 12px;
+            z-index: 2000;
+            opacity: 0;
+            transform: translateY(-10px) scale(0.98);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .module-dropdown.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-header {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #e02020;
+            letter-spacing: 0.06em;
+            padding: 6px 10px 8px;
+            border-bottom: 1px solid #f0d4d4;
+            margin-bottom: 6px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #1a0a0a;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #fff1f1;
+            transform: translateX(4px);
+        }
+
+        .dropdown-item .icon {
+            font-size: 22px;
+        }
+
+        .dropdown-item strong {
+            display: block;
+            font-size: 14px;
+            color: #1a0a0a;
+            line-height: 1.2;
+        }
+
+        .dropdown-item small {
+            display: block;
+            font-size: 11px;
+            color: #7a4a4a;
+            margin-top: 2px;
         }
 
         /* NAVBAR */
@@ -133,8 +235,48 @@
 <div class="bg"></div>
 
 <header>
-    <div class="logo">❤️ BLOODLINE</div>
-    <a href="homeDonar.html" style="color:#ffc9d3;"> ← Back</a>
+    <!-- CLICKABLE LOGO TRIGGER WITH DROPDOWN -->
+    <div class="logo-dropdown-container">
+        <div class="logo" id="hemoflowLogoBtn" onclick="toggleModuleMenu(event)">
+            <span>❤️ HEMOFLOW</span>
+            <span class="dropdown-arrow">▼</span>
+        </div>
+
+        <!-- 4-MODULE DROPDOWN MENU -->
+        <div class="module-dropdown" id="moduleDropdownMenu">
+            <div class="dropdown-header">Switch Portal Module</div>
+            <a href="homeDonar.html" class="dropdown-item">
+                <span class="icon">❤️</span>
+                <div>
+                    <strong>Donate Portal</strong>
+                    <small>Register & track donations</small>
+                </div>
+            </a>
+            <a href="../camp/index.html" class="dropdown-item">
+                <span class="icon">🏥</span>
+                <div>
+                    <strong>Camp Management</strong>
+                    <small>Schedule & track blood drives</small>
+                </div>
+            </a>
+            <a href="../matchmaker/index.html" class="dropdown-item">
+                <span class="icon">🔍</span>
+                <div>
+                    <strong>Matchmaking</strong>
+                    <small>Real-time emergency requests</small>
+                </div>
+            </a>
+            <a href="../blood/trial2.html" class="dropdown-item">
+                <span class="icon">🩸</span>
+                <div>
+                    <strong>Blood Bank Management</strong>
+                    <small>Inventory & stock management</small>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <a href="homeDonar.html" style="color:#ffc9d3; text-decoration: none; font-weight: 600;"> ← Back</a>
 </header>
 
 <!-- NAV -->
@@ -197,5 +339,28 @@
     "Every donor is a hero in disguise."
 </footer>
 
-</body>
+<script>
+// TOGGLE ANIMATED DROPDOWN MENU
+function toggleModuleMenu(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById("moduleDropdownMenu");
+    const logoBtn = document.getElementById("hemoflowLogoBtn");
+
+    dropdown.classList.toggle("show");
+    logoBtn.classList.toggle("active");
+}
+
+// CLOSE DROPDOWN WHEN CLICKING OUTSIDE
+document.addEventListener("click", function(event) {
+    const dropdown = document.getElementById("moduleDropdownMenu");
+    const logoBtn = document.getElementById("hemoflowLogoBtn");
+
+    if (dropdown && dropdown.classList.contains("show")) {
+        dropdown.classList.remove("show");
+        logoBtn.classList.remove("active");
+    }
+});
+</script>
+
+</body> 
 </html>

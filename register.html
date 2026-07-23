@@ -123,7 +123,7 @@
 <header>
     <div style="display:flex; align-items:center; gap:11px;">
         <span style="font-size:24px;">❤️</span>
-        <span class="brand-name">BLOOD-LINE</span>
+        <span class="brand-name">HEMOFLOW</span>
     </div>
     <div>Be the reason for someone's heartbeat...</div>
 </header>
@@ -170,25 +170,25 @@
     </div>
 
     <div class="search-section">
-        <div style="font-size: 40px; margin-bottom: 10px;">🆘</div>
-        <h2>Emergency Search</h2>
-        <p style="margin-bottom: 20px;">Need blood urgently? Search our real-time localized bank records database instantly.</p>
+    <div style="font-size: 40px; margin-bottom: 10px;">🆘</div>
+    <h2>Emergency Search</h2>
+    <p style="margin-bottom: 20px;">Need blood urgently? Search our real-time localized bank records database instantly.</p>
 
-        <div style="width: 100%; display: flex; flex-direction: column; gap: 14px;">
-            <div class="input-group">
-                <select id="searchGroup">
-                    <option value="">Required Blood Group</option>
-                    <option>A+</option><option>A-</option>
-                    <option>B+</option><option>B-</option>
-                    <option>O+</option><option>O-</option>
-                    <option>AB+</option><option>AB-</option>
-                </select>
-                <span class="error-msg" id="errorSearchGroup">⚠️ Please choose a blood group to find matches.</span>
-            </div>
-            <button class="btn" id="findBtn" style="background:#3a0000;" onclick="window.location.href='matchmaker/location.html'">Find Donors Near Me !</button>
-            <div class="success-msg" id="searchSuccess"></div>
+    <div style="width: 100%; display: flex; flex-direction: column; gap: 14px;">
+        <div class="input-group">
+            <select id="searchGroup">
+                <option value="">Required Blood Group</option>
+                <option>A+</option><option>A-</option>
+                <option>B+</option><option>B-</option>
+                <option>O+</option><option>O-</option>
+                <option>AB+</option><option>AB-</option>
+            </select>
+            <span class="error-msg" id="errorSearchGroup">⚠️ Please choose a blood group to find matches.</span>
         </div>
+        <!-- Trigger redirection with selected parameter -->
+        <button class="btn" id="findBtn" style="background:#3a0000;" onclick="goToLocationWithFilter()">Find Donors Near Me !</button>
     </div>
+</div>
 </div>
 
 <div id="optionsPage">
@@ -200,13 +200,13 @@
             <span class="icon">❤️</span>
             <span class="label">Donate</span>
         </div>
-        <div class="option-card" onclick="window.location.href='#'">
+        <div class="option-card" onclick="window.location.href='camp/index.html'">
             <span class="icon">🏥</span>
-            <span class="label">Camp Setup</span>
+            <span class="label">Camp Management</span>
         </div>
         <div class="option-card" onclick="window.location.href='matchmaker/index.html'">
             <span class="icon">🔍</span>
-            <span class="label">Matcher</span>
+            <span class="label">Matchmaking</span>
         </div>
         <div class="option-card" onclick="window.location.href='blood/trial2.html'">
             <span class="icon">🩸</span>
@@ -282,6 +282,19 @@ function findDonorsNearMe() {
         successMsg.style.display = "block";
         
     }, 1200);
+}
+function goToLocationWithFilter() {
+    const selectedBlood = document.getElementById("searchGroup").value;
+    const errorSpan = document.getElementById("errorSearchGroup");
+
+    if (!selectedBlood) {
+        errorSpan.style.display = "block";
+        return;
+    }
+
+    errorSpan.style.display = "none";
+    // Redirects to location.html passing the selected blood group in URL parameter
+    window.location.href = `matchmaker/location.html?blood=${encodeURIComponent(selectedBlood)}`;
 }
 </script>
 </body>

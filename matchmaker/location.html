@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BloodLine — Map</title>
+<title>HemoFlow — Real-Time Donor Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <style>
@@ -49,6 +49,11 @@
     z-index: 1000;
   }
 
+  .logo-dropdown-container {
+    position: relative;
+    display: inline-block;
+  }
+
   .logo {
     display: flex;
     align-items: center;
@@ -58,6 +63,14 @@
     font-size: 18px;
     letter-spacing: 0.04em;
     color: var(--text);
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+
+  .logo:hover {
+    background: rgba(214,40,40,0.1);
   }
 
   .logo-drop {
@@ -136,8 +149,6 @@
     transition: border-color 0.2s;
   }
 
-  .filter-select:focus { border-color: var(--red); }
-
   .filter-btn {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -172,20 +183,23 @@
     box-shadow: 0 2px 10px rgba(214,40,40,0.25);
   }
 
-  .locate-btn:hover { background: #bf1f1f; transform: translateY(-1px); }
+  .add-btn {
+    background: #3ddc84;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    color: #0e0b0b;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
 
   /* ── MAIN LAYOUT ── */
-  .main {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
-
-  /* ── MAP ── */
-  #map {
-    flex: 1;
-    z-index: 1;
-  }
+  .main { display: flex; flex: 1; overflow: hidden; }
+  #map { flex: 1; z-index: 1; }
 
   /* ── SIDE LIST ── */
   .side-list {
@@ -207,11 +221,7 @@
     flex-shrink: 0;
   }
 
-  .list-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-  }
+  .list-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
 
   .list-count {
     background: var(--red-glow);
@@ -223,15 +233,7 @@
     border: 1px solid rgba(214,40,40,0.25);
   }
 
-  .list-scroll {
-    flex: 1;
-    overflow-y: auto;
-    padding: 8px;
-  }
-
-  .list-scroll::-webkit-scrollbar { width: 4px; }
-  .list-scroll::-webkit-scrollbar-track { background: transparent; }
-  .list-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .list-scroll { flex: 1; overflow-y: auto; padding: 8px; }
 
   .list-item {
     background: var(--surface2);
@@ -243,17 +245,9 @@
     transition: all 0.2s;
   }
 
-  .list-item:hover {
-    border-color: rgba(214,40,40,0.4);
-    transform: translateX(-2px);
-  }
+  .list-item:hover { border-color: rgba(214,40,40,0.4); transform: translateX(-2px); }
 
-  .list-item-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 6px;
-  }
+  .list-item-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
 
   .list-avatar {
     width: 36px; height: 36px;
@@ -268,199 +262,70 @@
     flex-shrink: 0;
   }
 
-  .list-avatar.donor   { background: linear-gradient(135deg, var(--red-deep), var(--red)); }
+  .list-avatar.donor { background: linear-gradient(135deg, var(--red-deep), var(--red)); }
   .list-avatar.patient { background: linear-gradient(135deg, #1e3a5f, #2563eb); }
 
-  .list-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.2;
-  }
+  .list-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .list-sub { font-size: 11px; color: var(--text-muted); }
+  .list-blood { margin-left: auto; font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; color: var(--red); }
 
-  .list-sub {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 1px;
-  }
-
-  .list-blood {
-    margin-left: auto;
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--red);
-  }
-
-  .list-item-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 8px;
-  }
-
-  .dist-pill {
-    font-size: 11px;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
+  .list-item-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
 
   .type-pill {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 2px 7px;
-    border-radius: 4px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 4px;
   }
 
-  .type-pill.donor   { background: rgba(214,40,40,0.12); color: var(--red); }
+  .type-pill.donor { background: rgba(214,40,40,0.12); color: var(--red); }
   .type-pill.patient { background: rgba(96,165,250,0.12); color: var(--blue); }
 
-  /* ── LEGEND ── */
-  .legend {
-    padding: 10px 16px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    gap: 16px;
-    flex-shrink: 0;
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    z-index: 5000;
+    align-items: center; justify-content: center;
   }
 
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--text-muted);
+  .modal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    width: 90%; max-width: 420px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.6);
   }
 
-  .legend-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
+  .modal-card h3 { font-family: 'Syne', sans-serif; font-size: 18px; margin-bottom: 14px; color: var(--red); }
+
+  .form-group { margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; }
+  .form-group label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+  .form-group input, .form-group select {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px; color: var(--text); font-family: inherit; font-size: 13px;
   }
+
+  .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+  .save-btn { flex: 1; background: var(--red); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+  .cancel-btn { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 10px; border-radius: 8px; cursor: pointer; }
 
   /* ── LEAFLET OVERRIDES ── */
   .leaflet-container { background: #1a1212 !important; }
-
   .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9); }
-
   .leaflet-popup-content-wrapper {
-    background: var(--surface) !important;
-    color: var(--text) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
-    font-family: 'DM Sans', sans-serif !important;
+    background: var(--surface) !important; color: var(--text) !important;
+    border: 1px solid var(--border) !important; border-radius: 12px !important;
   }
 
-  .leaflet-popup-tip { background: var(--surface) !important; }
-
-  .leaflet-popup-close-button { color: var(--text-muted) !important; }
-
-  .popup-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-
-  .popup-row {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin: 3px 0;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .popup-blood {
-    font-family: 'Syne', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--red);
-    float: right;
-    margin-top: -4px;
-  }
-
-  .popup-contact {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 10px;
-    background: var(--red);
-    color: white;
-    border: none;
-    padding: 7px 14px;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .popup-contact:hover { background: #bf1f1f; }
-
-  .popup-type-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    padding: 2px 7px;
-    border-radius: 4px;
-    margin-bottom: 8px;
-  }
-
-  .popup-type-badge.donor   { background: rgba(214,40,40,0.15); color: var(--red); }
-  .popup-type-badge.patient { background: rgba(96,165,250,0.12); color: var(--blue); }
-
-  /* ── DISTANCE TOAST ── */
   .toast {
-    position: fixed;
-    bottom: 24px; left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 20px;
-    font-size: 13px;
-    color: var(--text);
-    z-index: 9999;
-    opacity: 0;
-    transition: all 0.3s;
-    white-space: nowrap;
-    pointer-events: none;
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 20px; font-size: 13px; color: var(--text); z-index: 9999;
+    opacity: 0; transition: all 0.3s; pointer-events: none;
   }
-
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  /* ── MOBILE LIST TOGGLE ── */
-  .list-toggle-btn {
-    display: none;
-    position: fixed;
-    bottom: 20px; right: 20px;
-    z-index: 500;
-    background: var(--red);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 52px; height: 52px;
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(214,40,40,0.4);
-  }
-
-  @media (max-width: 680px) {
-    .side-list { display: none; position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: 50vh; border-left: none; border-top: 1px solid var(--border); z-index: 400; }
-    .side-list.open { display: flex; }
-    .list-toggle-btn { display: flex; align-items: center; justify-content: center; }
-    .toolbar { gap: 6px; }
-  }
 </style>
 </head>
 <body>
@@ -469,82 +334,111 @@
 <header class="header">
   <div class="logo">
     <div class="logo-drop"></div>
-    BLOODLINE
+    HEMOFLOW
   </div>
-  <div style="font-size:12px;color:var(--text-muted);letter-spacing:0.06em;font-weight:500;">NEARBY MAP</div>
+  <div style="font-size:12px;color:var(--text-muted);letter-spacing:0.06em;font-weight:500;">LIVE DONOR TRACKER</div>
 </header>
 
 <!-- TOOLBAR -->
 <div class="toolbar">
-  <div class="search-wrap" style="position:relative;">
+  <div class="search-wrap">
     <span class="search-icon">🔍</span>
-    <input class="search-input" id="searchInput" placeholder="Search name or city..." oninput="onSearchInput()" onkeydown="onSearchKey(event)" autocomplete="off">
-    <div id="suggestBox" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;z-index:9999;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.5);max-height:260px;overflow-y:auto;"></div>
+    <input class="search-input" id="searchInput" placeholder="Search name or city..." oninput="renderAll()">
   </div>
 
-  <select class="filter-select" id="bloodFilter" onchange="applyFilters()">
+  <select class="filter-select" id="bloodFilter" onchange="renderAll()">
     <option value="">All Blood Groups</option>
-    <option value="O+">O+</option>
-    <option value="O-">O−</option>
-    <option value="A+">A+</option>
-    <option value="A-">A−</option>
-    <option value="B+">B+</option>
-    <option value="B-">B−</option>
-    <option value="AB+">AB+</option>
-    <option value="AB-">AB−</option>
+    <option value="O+">O+</option><option value="O-">O−</option>
+    <option value="A+">A+</option><option value="A-">A−</option>
+    <option value="B+">B+</option><option value="B-">B−</option>
+    <option value="AB+">AB+</option><option value="AB-">AB−</option>
   </select>
 
-  <button class="filter-btn active-filter" id="btnAll"     onclick="setTypeFilter('all')">All</button>
-  <button class="filter-btn"               id="btnDonors"  onclick="setTypeFilter('donor')">🔴 Donors</button>
-  <button class="filter-btn"               id="btnPatients"onclick="setTypeFilter('patient')">🔵 Patients</button>
+  <button class="filter-btn active-filter" id="btnAll" onclick="setTypeFilter('all')">All</button>
+  <button class="filter-btn" id="btnDonors" onclick="setTypeFilter('donor')">🔴 Donors</button>
+  <button class="filter-btn" id="btnPatients" onclick="setTypeFilter('patient')">🔵 Patients</button>
 
-  <button class="locate-btn" onclick="locateMe()">📍 My Location</button>
+  <button class="add-btn" onclick="openModal()">+ Register Live Donor</button>
+  <button class="locate-btn" onclick="startLiveTracking()">📡 Start Live GPS</button>
 </div>
 
-<!-- MAIN -->
+<!-- MAIN LAYOUT -->
 <div class="main">
   <div id="map"></div>
 
-  <!-- SIDE LIST -->
-  <div class="side-list" id="sideList">
+  <div class="side-list">
     <div class="list-header">
-      <span class="list-title">Nearby People</span>
-      <span class="list-count" id="listCount">4</span>
+      <span class="list-title">Active Live Network</span>
+      <span class="list-count" id="listCount">0</span>
     </div>
     <div class="list-scroll" id="listScroll"></div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Donor</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Patient</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> You</div>
+  </div>
+</div>
+
+<!-- REGISTER DONOR MODAL -->
+<div class="modal-overlay" id="donorModal">
+  <div class="modal-card">
+    <h3>Register Live Donor</h3>
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="regName" placeholder="e.g. Rahul Sharma">
+    </div>
+    <div class="form-group">
+      <label>Role</label>
+      <select id="regType">
+        <option value="donor">Donor (🔴)</option>
+        <option value="patient">Patient (🔵)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Blood Group</label>
+      <select id="regBlood">
+        <option value="O+">O+</option><option value="O-">O-</option>
+        <option value="A+">A+</option><option value="A-">A-</option>
+        <option value="B+">B+</option><option value="B-">B-</option>
+        <option value="AB+">AB+</option><option value="AB-">AB-</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>City / Suburb</label>
+      <input type="text" id="regCity" placeholder="e.g. Chinchwad, Pune">
+    </div>
+    <div class="form-group">
+      <label>Email / Phone</label>
+      <input type="text" id="regContact" placeholder="e.g. donor@hemoflow.org">
+    </div>
+    <div class="modal-actions">
+      <button class="save-btn" onclick="saveNewDonor()">Save & Pin to Live Map</button>
+      <button class="cancel-btn" onclick="closeModal()">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- Mobile list toggle -->
-<button class="list-toggle-btn" onclick="document.getElementById('sideList').classList.toggle('open')">☰</button>
-
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-const locations = [
-  { name:"Rahul Sharma",  type:"donor",   blood:"O+",  lat:19.0760, lng:72.8777, city:"Andheri, Mumbai",   contact:"rahul@example.com"  },
-  { name:"Amit Verma",    type:"patient", blood:"A+",  lat:19.0820, lng:72.8810, city:"Bandra, Mumbai",    contact:"amit@example.com"   },
-  { name:"Sneha Kapoor",  type:"donor",   blood:"B+",  lat:19.0900, lng:72.8750, city:"Dadar, Mumbai",     contact:"sneha@example.com"  },
-  { name:"Rohit Singh",   type:"patient", blood:"AB-", lat:19.0700, lng:72.8900, city:"Kurla, Mumbai",     contact:"rohit@example.com"  },
-  { name:"Priya Nair",    type:"donor",   blood:"O-",  lat:19.0650, lng:72.8700, city:"Worli, Mumbai",     contact:"priya@example.com"  },
-  { name:"Karan Mehta",   type:"donor",   blood:"A-",  lat:19.0980, lng:72.8830, city:"Goregaon, Mumbai",  contact:"karan@example.com"  },
-  { name:"Divya Joshi",   type:"patient", blood:"B-",  lat:19.0550, lng:72.8650, city:"Chembur, Mumbai",   contact:"divya@example.com"  },
+// 1. INITIALIZE DATABASE WITH PERSISTENT LOCAL STORAGE RETENTION
+const initialLocations = [
+  { id:1, name:"Rahul Sharma", type:"donor", blood:"O+", lat:18.6298, lng:73.7997, city:"Chinchwad, Pune", contact:"rahul@hemoflow.org" },
+  { id:2, name:"Sneha Kapoor", type:"donor", blood:"B+", lat:18.6200, lng:73.8100, city:"Pimpri, Pune", contact:"sneha@hemoflow.org" },
+  { id:3, name:"Amit Verma", type:"patient", blood:"A+", lat:18.6400, lng:73.7800, city:"Nigdi, Pune", contact:"amit@hemoflow.org" }
 ];
+
+let locations = JSON.parse(localStorage.getItem('hemoflow_donors')) || initialLocations;
+
+function persistData() {
+  localStorage.setItem('hemoflow_donors', JSON.stringify(locations));
+}
 
 let typeFilter = 'all';
 let userLatLng = null;
 let userMarker = null;
-let markers    = [];
+let markers = [];
+let watchId = null;
 
-// Init map
-const map = L.map('map').setView([19.0760, 72.8777], 13);
+// Init Leaflet map centered at local coordinates
+const map = L.map('map').setView([18.6298, 73.7997], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
 function getInitials(name) {
@@ -566,55 +460,38 @@ function createMarkerIcon(type) {
     <path d="M14 2 C14 2, 2 14, 2 21 A12 12 0 0 0 26 21 C26 14, 14 2, 14 2Z" fill="${color}" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
     <circle cx="14" cy="20" r="5" fill="rgba(255,255,255,0.25)"/>
   </svg>`;
-  return L.divIcon({
-    html: svg,
-    className: '',
-    iconSize: [28, 36],
-    iconAnchor: [14, 36],
-    popupAnchor: [0, -38]
-  });
-}
-
-function buildPopup(loc) {
-  const dist = userLatLng ? `<div class="popup-row">📏 ${haversine(userLatLng.lat, userLatLng.lng, loc.lat, loc.lng)} km away</div>` : '';
-  return `
-    <div style="min-width:180px;">
-      <span class="popup-type-badge ${loc.type}">${loc.type === 'donor' ? '🔴 Donor' : '🔵 Patient'}</span>
-      <span class="popup-blood">${loc.blood}</span>
-      <div class="popup-name">${loc.name}</div>
-      <div class="popup-row">📍 ${loc.city}</div>
-      <div class="popup-row">✉️ ${loc.contact}</div>
-      ${dist}
-      <br>
-      <a class="popup-contact" href="mailto:${loc.contact}">✉️ Contact</a>
-    </div>`;
+  return L.divIcon({ html: svg, className: '', iconSize: [28, 36], iconAnchor: [14, 36], popupAnchor: [0, -38] });
 }
 
 function renderAll() {
   const search = document.getElementById('searchInput').value.toLowerCase();
-  const blood  = document.getElementById('bloodFilter').value;
+  const blood = document.getElementById('bloodFilter').value;
 
-  markers.forEach(m => { map.removeLayer(m.marker); m.loc._marker = null; });
+  markers.forEach(m => map.removeLayer(m.marker));
   markers = [];
 
   const filtered = locations.filter(loc => {
-    const matchType   = typeFilter === 'all' || loc.type === typeFilter;
-    const matchBlood  = !blood || loc.blood === blood;
+    const matchType = typeFilter === 'all' || loc.type === typeFilter;
+    const matchBlood = !blood || loc.blood === blood;
     const matchSearch = !search || loc.name.toLowerCase().includes(search) || loc.city.toLowerCase().includes(search);
     return matchType && matchBlood && matchSearch;
   });
 
-  // Sort by distance if user located
-  if (userLatLng) {
-    filtered.sort((a,b) => haversine(userLatLng.lat, userLatLng.lng, a.lat, a.lng) - haversine(userLatLng.lat, userLatLng.lng, b.lat, b.lng));
-  }
-
   filtered.forEach(loc => {
+    const popupHtml = `
+      <div style="min-width:160px;">
+        <span style="font-size:10px;font-weight:700;color:${loc.type === 'donor' ? '#d62828' : '#60a5fa'}">${loc.type.toUpperCase()}</span>
+        <span style="float:right;font-weight:800;color:#d62828;">${loc.blood}</span>
+        <div style="font-weight:700;font-size:15px;margin-top:4px;">${loc.name}</div>
+        <div style="font-size:11px;color:#9e8a8a;">📍 ${loc.city}</div>
+        <div style="font-size:11px;color:#9e8a8a;margin-top:2px;">✉️ ${loc.contact}</div>
+      </div>
+    `;
+
     const marker = L.marker([loc.lat, loc.lng], { icon: createMarkerIcon(loc.type) })
       .addTo(map)
-      .bindPopup(buildPopup(loc), { maxWidth: 240 });
-    loc._marker = marker; // store reference directly on loc
-    markers.push({ marker, loc });
+      .bindPopup(popupHtml);
+    markers.push({ id: loc.id, marker, loc });
   });
 
   renderList(filtered);
@@ -626,7 +503,7 @@ function renderList(filtered) {
   scroll.innerHTML = '';
 
   if (!filtered.length) {
-    scroll.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;">No results found</div>`;
+    scroll.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;">No active entries found</div>`;
     return;
   }
 
@@ -644,221 +521,90 @@ function renderList(filtered) {
         <div class="list-blood">${loc.blood}</div>
       </div>
       <div class="list-item-footer">
-        <span class="dist-pill">📍 ${dist}</span>
+        <span style="font-size:11px;color:var(--text-muted);">📍 ${dist}</span>
         <span class="type-pill ${loc.type}">${loc.type}</span>
       </div>`;
     el.onclick = () => {
       map.setView([loc.lat, loc.lng], 15);
-      if (loc._marker) loc._marker.openPopup();
+      const m = markers.find(item => item.id === loc.id);
+      if (m) m.marker.openPopup();
     };
     scroll.appendChild(el);
   });
 }
 
-// ── SUGGEST BOX STYLES (injected once) ──
-(function(){
-  const s = document.createElement('style');
-  s.textContent = `
-    .suggest-item {
-      padding: 10px 14px;
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--text);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: background 0.15s;
-    }
-    .suggest-item:last-child { border-bottom: none; }
-    .suggest-item:hover, .suggest-item.active { background: var(--red-glow); }
-    .suggest-icon { font-size: 15px; flex-shrink: 0; }
-    .suggest-label { flex: 1; }
-    .suggest-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-    .suggest-badge {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      padding: 2px 6px; border-radius: 4px; letter-spacing: 0.06em;
-    }
-    .suggest-badge.donor   { background: rgba(214,40,40,0.15); color: var(--red); }
-    .suggest-badge.patient { background: rgba(96,165,250,0.12); color: var(--60a5fa,#60a5fa); color: #60a5fa; }
-    .suggest-badge.city    { background: rgba(61,220,132,0.12); color: #3ddc84; }
-  `;
-  document.head.appendChild(s);
-})();
-
-let suggestIdx = -1;
-
-function onSearchInput() {
-  const q = document.getElementById('searchInput').value.trim();
-  applyFilters();
-  if (q.length < 1) { closeSuggest(); return; }
-  buildSuggestions(q);
-}
-
-function buildSuggestions(q) {
-  const box = document.getElementById('suggestBox');
-  const ql  = q.toLowerCase();
-  const items = [];
-
-  // 1. Match people (name or city) from locations data
-  locations.forEach(loc => {
-    if (loc.name.toLowerCase().includes(ql) || loc.city.toLowerCase().includes(ql)) {
-      items.push({ kind: 'person', label: loc.name, sub: loc.city, type: loc.type, blood: loc.blood, lat: loc.lat, lng: loc.lng });
-    }
-  });
-
-  // 2. Deduplicated city matches
-  const cities = new Map();
-  locations.forEach(loc => {
-    const parts = loc.city.split(',').map(s => s.trim());
-    parts.forEach(part => {
-      if (part.toLowerCase().includes(ql) && !cities.has(part)) {
-        cities.set(part, { lat: loc.lat, lng: loc.lng });
-      }
-    });
-  });
-  cities.forEach((coords, city) => {
-    if (!items.find(i => i.kind === 'city' && i.label === city)) {
-      items.push({ kind: 'city', label: city, sub: 'Jump to area', lat: coords.lat, lng: coords.lng });
-    }
-  });
-
-  if (!items.length) {
-    // 3. Fallback: Nominatim geocode
-    fetchNominatim(q);
+// 2. REAL-TIME CONTINUOUS GEOLOCATION WATCHING ENGINE
+function startLiveTracking() {
+  if (!navigator.geolocation) {
+    showToast("Geolocation not supported on this browser.");
     return;
   }
 
-  renderSuggest(items);
-}
+  showToast("📡 Connecting to Real-Time Satellite GPS...");
 
-function fetchNominatim(q) {
-  const box = document.getElementById('suggestBox');
-  box.style.display = 'block';
-  box.innerHTML = `<div class="suggest-item"><span class="suggest-icon">⏳</span><div class="suggest-label">Searching "${q}"...</div></div>`;
-
-  fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&addressdetails=1`)
-    .then(r => r.json())
-    .then(results => {
-      if (!results.length) {
-        box.innerHTML = `<div class="suggest-item"><span class="suggest-icon">❌</span><div class="suggest-label">No results for "${q}"</div></div>`;
-        return;
+  watchId = navigator.geolocation.watchPosition(
+    pos => {
+      userLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      
+      if (userMarker) {
+        userMarker.setLatLng([userLatLng.lat, userLatLng.lng]);
+      } else {
+        const youIcon = L.divIcon({
+          html: `<div style="width:18px;height:18px;background:#3ddc84;border-radius:50%;border:3px solid white;box-shadow:0 0 14px rgba(61,220,132,0.8);"></div>`,
+          className: '', iconSize: [18,18], iconAnchor: [9,9]
+        });
+        userMarker = L.marker([userLatLng.lat, userLatLng.lng], { icon: youIcon })
+          .addTo(map)
+          .bindPopup('<div style="color:#f5eded;font-size:13px;font-weight:700;">📍 You are Live Here</div>');
+        map.setView([userLatLng.lat, userLatLng.lng], 14);
       }
-      const items = results.map(r => ({
-        kind: 'geocode',
-        label: r.display_name.split(',')[0],
-        sub: r.display_name.split(',').slice(1,3).join(',').trim(),
-        lat: parseFloat(r.lat),
-        lng: parseFloat(r.lon)
-      }));
-      renderSuggest(items);
-    })
-    .catch(() => {
-      box.innerHTML = `<div class="suggest-item"><span class="suggest-icon">⚠️</span><div class="suggest-label">Search unavailable offline</div></div>`;
-    });
+      showToast("📡 Live Position Synchronized!");
+      renderAll();
+    },
+    err => showToast("⚠️ Position lock failed. Ensure GPS permission is active."),
+    { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+  );
 }
 
-function renderSuggest(items) {
-  const box = document.getElementById('suggestBox');
-  box.innerHTML = '';
-  suggestIdx = -1;
+// 3. DONOR MODAL REGISTRATION & PERSISTENCE
+function openModal() { document.getElementById('donorModal').style.display = 'flex'; }
+function closeModal() { document.getElementById('donorModal').style.display = 'none'; }
 
-  items.slice(0, 8).forEach((item, i) => {
-    const el = document.createElement('div');
-    el.className = 'suggest-item';
-    const icon  = item.kind === 'person' ? (item.type === 'donor' ? '🔴' : '🔵') : item.kind === 'city' ? '📍' : '🌍';
-    const badge = item.kind === 'person'
-      ? `<span class="suggest-badge ${item.type}">${item.type} · ${item.blood}</span>`
-      : `<span class="suggest-badge city">${item.kind === 'geocode' ? 'Map' : 'Area'}</span>`;
+function saveNewDonor() {
+  const name = document.getElementById('regName').value.trim();
+  const type = document.getElementById('regType').value;
+  const blood = document.getElementById('regBlood').value;
+  const city = document.getElementById('regCity').value.trim();
+  const contact = document.getElementById('regContact').value.trim();
 
-    el.innerHTML = `
-      <span class="suggest-icon">${icon}</span>
-      <div class="suggest-label">
-        <div>${item.label}</div>
-        <div class="suggest-sub">${item.sub || ''}</div>
-      </div>
-      ${badge}`;
-
-    el.onmousedown = (e) => { e.preventDefault(); selectSuggest(item); };
-    box.appendChild(el);
-  });
-
-  box.style.display = items.length ? 'block' : 'none';
-}
-
-function selectSuggest(item) {
-  document.getElementById('searchInput').value = item.label;
-  closeSuggest();
-  map.setView([item.lat, item.lng], item.kind === 'person' ? 15 : 14, { animate: true });
-
-  if (item.kind === 'person') {
-    // open that person's marker popup
-    const found = markers.find(m => m.loc.name === item.label);
-    if (found) setTimeout(() => found.marker.openPopup(), 400);
+  if (!name || !city) {
+    showToast("Please fill out name and city location!");
+    return;
   }
 
-  applyFilters();
+  const baseLat = userLatLng ? userLatLng.lat : 18.6298;
+  const baseLng = userLatLng ? userLatLng.lng : 73.7997;
+
+  const newRecord = {
+    id: Date.now(),
+    name, type, blood, city, contact,
+    lat: baseLat + (Math.random() - 0.5) * 0.02,
+    lng: baseLng + (Math.random() - 0.5) * 0.02
+  };
+
+  locations.push(newRecord);
+  persistData(); 
+  renderAll();
+  closeModal();
+  showToast(`✅ Registered ${name} to Live Map Database!`);
 }
-
-function onSearchKey(e) {
-  const box   = document.getElementById('suggestBox');
-  const items = box.querySelectorAll('.suggest-item');
-  if (!items.length) return;
-
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    suggestIdx = Math.min(suggestIdx + 1, items.length - 1);
-    items.forEach((el, i) => el.classList.toggle('active', i === suggestIdx));
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    suggestIdx = Math.max(suggestIdx - 1, 0);
-    items.forEach((el, i) => el.classList.toggle('active', i === suggestIdx));
-  } else if (e.key === 'Enter' && suggestIdx >= 0) {
-    e.preventDefault();
-    items[suggestIdx]?.dispatchEvent(new MouseEvent('mousedown'));
-  } else if (e.key === 'Escape') {
-    closeSuggest();
-  }
-}
-
-function closeSuggest() {
-  document.getElementById('suggestBox').style.display = 'none';
-  suggestIdx = -1;
-}
-
-document.addEventListener('click', (e) => {
-  if (!document.getElementById('searchInput').contains(e.target)) closeSuggest();
-});
-
-function applyFilters() { renderAll(); }
 
 function setTypeFilter(type) {
   typeFilter = type;
-  document.getElementById('btnAll').classList.toggle('active-filter',     type==='all');
-  document.getElementById('btnDonors').classList.toggle('active-filter',  type==='donor');
-  document.getElementById('btnPatients').classList.toggle('active-filter',type==='patient');
+  document.getElementById('btnAll').classList.toggle('active-filter', type==='all');
+  document.getElementById('btnDonors').classList.toggle('active-filter', type==='donor');
+  document.getElementById('btnPatients').classList.toggle('active-filter', type==='patient');
   renderAll();
-}
-
-function locateMe() {
-  if (!navigator.geolocation) { showToast('Geolocation not supported'); return; }
-  showToast('📍 Locating you...');
-  navigator.geolocation.getCurrentPosition(pos => {
-    userLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-    if (userMarker) map.removeLayer(userMarker);
-    const youIcon = L.divIcon({
-      html: `<div style="width:16px;height:16px;background:#3ddc84;border-radius:50%;border:3px solid white;box-shadow:0 0 12px rgba(61,220,132,0.7);"></div>`,
-      className: '',
-      iconSize: [16,16],
-      iconAnchor: [8,8]
-    });
-    userMarker = L.marker([userLatLng.lat, userLatLng.lng], { icon: youIcon })
-      .addTo(map)
-      .bindPopup('<div style="color:#f5eded;font-family:DM Sans,sans-serif;font-size:13px;font-weight:600;">📍 You are here</div>');
-    map.setView([userLatLng.lat, userLatLng.lng], 14);
-    showToast('✅ Location found — distances updated');
-    renderAll();
-  }, () => showToast('❌ Could not get location'));
 }
 
 function showToast(msg) {
@@ -868,7 +614,22 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// Initial render
+// 4. PARSE URL PARAMETERS FROM REGISTER SEARCH
+function applyUrlBloodFilter() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const bloodFromUrl = urlParams.get('blood');
+
+    if (bloodFromUrl) {
+        const bloodSelect = document.getElementById('bloodFilter');
+        if (bloodSelect) {
+            bloodSelect.value = bloodFromUrl; 
+            showToast(`🔍 Auto-filtered for ${bloodFromUrl} donors`);
+        }
+    }
+}
+
+// EXECUTION SEQUENCE
+applyUrlBloodFilter();
 renderAll();
 </script>
 </body>

@@ -10,6 +10,7 @@ const EmergencyRequest = require('./models/EmergencyRequest');
 const Patient = require('./models/Patient'); 
 const BloodBag = require('./models/BloodBag');
 const Transaction = require('./models/Transaction');
+const Camp = require('./models/Camp'); // Cleanly imported here
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,8 +20,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // --- Database Connectivity Gateway Handshake ---
-// Using process.env.MONGO_URI falls back cleanly if environment arrays are injected
-// What you push to GitHub:
 const DB_URL = process.env.MONGO_URI;
 mongoose.connect(DB_URL)
   .then(() => console.log('🚀 BloodLine Matrix Securely Connected to MongoDB Cloud Atlas Layer.'))
@@ -200,8 +199,7 @@ app.post('/api/inventory/dispatch-transaction', async (req, res) => {
 });
 
 /**
- * ➕ Endpoint 8: REMOVE - Delete Expired/Discarded Container From Database
- * Matches the route triggered inside your inventory frontend dashboards!
+ * Endpoint 8: REMOVE - Delete Expired/Discarded Container From Database
  */
 app.delete('/api/inventory/bag/:id', async (req, res) => {
   try {
@@ -210,6 +208,76 @@ app.delete('/api/inventory/bag/:id', async (req, res) => {
       return res.status(404).json({ success: false, message: "Specified blood container item record not located." });
     }
     res.status(200).json({ success: true, message: "Blood unit package successfully purged from database array stock permanently." });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ==========================================
+// 🎪 HEMOFLOW CAMP MANAGEMENT ENDPOINTS
+// ==========================================
+
+/**
+ * Endpoint 9: Get active camp or archives
+ */
+app.get('/api/camps', async (req, res) => {
+  try {
+    const activeCamp = await Camp.findOne({ status: 'Active' });
+    const completedCamps = await Camp.find({ status: 'Completed' }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, activeCamp, archives: completedCamps });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * Endpoint 10: Schedule & Initialize a new Blood Camp
+ */
+app.post('/api/camps/schedule', async (req, res) => {
+  try {
+    const existingActive = await Camp.findOne({ status: 'Active' });
+    if (existingActive) {
+      return res.status(400).json({ success: false, message: 'An active camp session is already running.' });
+    }
+    const newCamp = new Camp(req.body);
+    const savedCamp = await newCamp.save();
+    res.status(201).json({ success: true, camp: savedCamp });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * Endpoint 11: Log a Donor into the Active Camp Session
+ */
+app.post('/api/camps/:campId/donor', async (req, res) => {
+  try {
+    const camp = await Camp.findById(req.params.campId);
+    if (!camp || camp.status !== 'Active') {
+      return res.status(404).json({ success: false, message: 'No active camp session found.' });
+    }
+    
+    camp.donors.push(req.body);
+    await camp.save();
+
+    res.status(200).json({ success: true, camp });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * Endpoint 12: Complete & Archive the Active Camp
+ */
+app.put('/api/camps/:campId/end', async (req, res) => {
+  try {
+    const camp = await Camp.findById(req.params.campId);
+    if (!camp) return res.status(404).json({ success: false, message: 'Camp record not located.' });
+
+    camp.status = 'Completed';
+    await camp.save();
+
+    res.status(200).json({ success: true, message: 'Camp drive finalized and archived securely.', camp });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
